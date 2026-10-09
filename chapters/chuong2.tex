@@ -1,29 +1,254 @@
-\chapter{NỘI DUNG THỰC TẬP}
+% ============================================================
+% Chuong 2 -- Noi dung thuc tap
+% Sinh vien: Dinh Van Tan Luong -- MSV: 1771020446
+% Don vi: Cong ty Co Phan Tuong Lai NEXTX
+% ============================================================
 
-\textit{Lưu ý: Sinh viên cần cập nhật báo cáo theo từng tuần dựa trên công việc thực tế đã thực hiện.}
+\chapter{NỘI DUNG THỰC TẬP}
 
 \section{Mô tả công việc thực tập}
 
-Sinh viên mô tả tổng quan công việc được giao trong thời gian thực tập, bao gồm mục tiêu công việc, phạm vi công việc, công cụ sử dụng và sản phẩm/kết quả cần đạt được.
+\subsection{Tổng quan dự án}
+
+Trong thời gian thực tập tại Công ty Cổ Phần Tương Lai NEXTX, sinh viên được giao tham gia xây dựng hệ thống \textbf{NextFarm Chatbot} --- một chatbot tư vấn nông nghiệp thông minh phục vụ nông dân. Đây là một dự án AI ứng dụng kết hợp các kỹ thuật tiên tiến trong lĩnh vực Xử lý ngôn ngữ tự nhiên (NLP), Truy xuất thông tin (Information Retrieval) và Trí tuệ nhân tạo sinh tạo (Generative AI), triển khai trên nền tảng IoT nông nghiệp NextFarm đang vận hành thực tế.
+
+\textbf{Tên dự án}: NextFarm Chatbot Nông Nghiệp AI (phiên bản 2.2)
+
+\textbf{Mục tiêu}: Xây dựng hệ thống chatbot có khả năng trả lời chính xác và đáng tin cậy các câu hỏi nông nghiệp, đồng thời tích hợp trực tiếp với nền tảng IoT NextFarm để đọc dữ liệu cảm biến và trạng thái thiết bị theo thời gian thực.
+
+\subsection{Phạm vi công việc}
+
+Hệ thống chatbot cần đáp ứng được các nhóm nhu cầu chính sau:
+
+\begin{itemize}
+    \item Tra cứu kỹ thuật canh tác đa dạng nông sản (lúa, cà phê, sầu riêng, hồ tiêu, ngô, thanh long, xoài, bưởi, cao su, chè).
+    \item Cung cấp liều lượng phân bón, thuốc bảo vệ thực vật (BVTV) theo mùa vụ, loại đất và giai đoạn sinh trưởng cụ thể với độ chính xác tuyệt đối.
+    \item Tư vấn chọn giống phù hợp điều kiện đất đai và thời vụ.
+    \item Đọc và giải thích dữ liệu cảm biến IoT thời gian thực từ nền tảng NextFarm (nhiệt độ, độ ẩm đất, tình trạng thiết bị tưới, lịch tưới).
+    \item Quản lý phân quyền truy cập theo cấp độ trang trại (Farm-level IAM).
+\end{itemize}
+
+\subsection{Công cụ và công nghệ sử dụng}
+
+Bảng~\ref{tab:cong-nghe} trình bày các công nghệ cốt lõi được sử dụng trong dự án.
+
+\begin{table}[H]
+\caption{Công nghệ sử dụng trong dự án NextFarm Chatbot}
+\label{tab:cong-nghe}
+\centering
+\begin{tabular}{|p{4.5cm}|p{9cm}|}
+\hline
+\textbf{Thành phần} & \textbf{Công nghệ / Thư viện} \\
+\hline
+Backend API & FastAPI + Uvicorn (Python) \\
+\hline
+Mô hình ngôn ngữ lớn & Google Gemini (gemini-3.6-flash, gemini-3.1-flash-lite) \\
+\hline
+Embedding model & intfloat/multilingual-e5-large (1024 chiều) \\
+\hline
+Cơ sở dữ liệu vector & ChromaDB (local persistent) \\
+\hline
+Cơ sở dữ liệu quan hệ & PostgreSQL \\
+\hline
+Truy xuất thưa (sparse) & BM25 Okapi (rank\_bm25) \\
+\hline
+Phân tích tài liệu & marker-master (PDF, DOCX, PPTX, XLSX, EPUB) \\
+\hline
+Xử lý tiếng Việt & underthesea \\
+\hline
+Frontend & HTML/CSS/JavaScript (Vanilla) \\
+\hline
+Hệ điều hành & Windows (triển khai nội bộ) \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp}
+\end{table}
+
+\subsection{Kiến trúc tổng thể hệ thống}
+
+Hệ thống NextFarm Chatbot được thiết kế theo kiến trúc \textbf{RAG (Retrieval-Augmented Generation)} mở rộng, kết hợp ba tầng dữ liệu độc lập và một lớp Agentic Tools tích hợp với API IoT thời gian thực.
+
+% ======================================================
+% GHI CHU ANH [1]: Can ve so do kien truc tong the
+% mo ta luong: Frontend -> FastAPI Backend ->
+% Query Pipeline (Router -> Retrieval -> Synthesis) ->
+% PostgreSQL / ChromaDB / Gemini API.
+% Khi co anh: bo comment dong fbox, bo comment dong includegraphics
+% va xoa dong fbox.
+% Luu vao: images/kien-truc-tong-the.png
+% ======================================================
+
+\begin{sodo}[H]
+    \centering
+    % \includegraphics[width=0.95\textwidth]{images/kien-truc-tong-the.png}
+    \fbox{\parbox[c][5cm][c]{0.9\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn sơ đồ kiến trúc tổng thể hệ thống tại đây]} \\[6pt]
+        Luồng: Frontend $\rightarrow$ FastAPI $\rightarrow$ Router $\rightarrow$ Tri-Layer RAG $\rightarrow$ Gemini
+    }}
+    \SodoCaption{Kiến trúc tổng thể hệ thống NextFarm Chatbot}{Sinh viên tự xây dựng}
+    \label{fig:kien-truc-tong-the}
+\end{sodo}
+
+Kiến trúc hệ thống gồm các lớp chính sau:
+
+\begin{itemize}
+    \item \textbf{Frontend}: Giao diện web gồm trang chat cho người dùng (\texttt{index.html}) và trang quản trị (\texttt{admin.html}).
+    \item \textbf{FastAPI Backend}: Điểm tiếp nhận toàn bộ yêu cầu, bao gồm API xác thực, API chat và API quản trị.
+    \item \textbf{Query Processing Pipeline}: Chuỗi xử lý câu hỏi gồm 7 bước: (1) tiền xử lý NLP tiếng Việt, (2) Fast-path Rule Router, (3) LLM Router (Gemini) làm dự phòng, (4) Retrieval Plan song song đa nguồn, (5) hợp nhất và xếp hạng kết quả bằng thuật toán RRF (Reciprocal Rank Fusion), (6) tổng hợp câu trả lời qua Gemini, (7) kiểm tra và xác minh (Guardrail).
+    \item \textbf{Cơ sở dữ liệu}: PostgreSQL lưu trữ dữ liệu quan hệ (\texttt{facts}, \texttt{kg\_triples}, \texttt{users}, \texttt{sessions}); ChromaDB lưu trữ vector embedding tài liệu.
+    \item \textbf{Gemini API Pool}: Cơ chế xoay vòng tối đa 8 API key để tránh giới hạn tốc độ (rate limit).
+\end{itemize}
+
+Điểm nổi bật của kiến trúc là \textbf{Tri-Layer RAG} (RAG Ba Tầng), đảm bảo nguyên tắc: số liệu định lượng rủi ro cao (liều lượng phân bón, thuốc BVTV) phải đến từ nguồn dữ liệu có kiểm soát chứ không để mô hình ngôn ngữ tự sinh ra --- đây là yêu cầu an toàn tối quan trọng khi chatbot phục vụ nông dân trong thực tế.
 
 \section{Công việc thực tập}
 
-Sinh viên trình bày chi tiết các nhóm công việc đã thực hiện. Ví dụ:
+Toàn bộ quá trình thực tập kéo dài 9 tuần (từ 06/07/2026 đến 07/09/2026), tập trung vào xây dựng từng thành phần của hệ thống NextFarm Chatbot. Dưới đây là mô tả chi tiết theo từng giai đoạn công việc.
+
+\subsection{Giai đoạn 1 -- Nghiên cứu và xác định yêu cầu (Tuần 1--3)}
+
+\subsubsection{Phân tích hệ thống AI nhận diện sâu bệnh (Tuần 1)}
+
+Ở tuần đầu tiên, sinh viên được giao nhiệm vụ tìm hiểu và phân tích yêu cầu cho hệ thống AI nhận diện sâu bệnh cây trồng --- một tính năng dự kiến tích hợp vào nền tảng NextFarm. Qua quá trình nghiên cứu, sinh viên đã xác định được các yêu cầu nghiệp vụ cơ bản: cơ chế lọc ảnh có độ tin cậy thấp để đưa vào hàng chờ duyệt thủ công, lưu vết đầy đủ quá trình xử lý, phân tích nhóm lỗi theo danh mục bệnh, quản lý phiên bản mô hình và so sánh hiệu năng giữa các phiên bản. Công việc này giúp sinh viên làm quen với đặc thù bài toán AI nông nghiệp, hiểu rõ khoảng cách giữa mô hình học sâu và ứng dụng thực tế trong điều kiện ảnh thực địa chất lượng thấp.
+
+\subsubsection{Xác định và phân loại nguồn dữ liệu (Tuần 2)}
+
+Tuần 2 đánh dấu bước chuyển sang nhiệm vụ chính: xây dựng chatbot nông nghiệp. Sinh viên thực hiện khảo sát tổng thể yêu cầu nghiệp vụ và phân loại dữ liệu đầu vào thành 4 nhóm độc lập:
 
 \begin{itemize}
-    \item Tìm hiểu quy trình phát triển phần mềm tại doanh nghiệp.
-    \item Cài đặt môi trường phát triển.
-    \item Tìm hiểu tài liệu yêu cầu, tài liệu thiết kế hoặc mã nguồn.
-    \item Tham gia xây dựng, kiểm thử hoặc bảo trì một chức năng cụ thể.
-    \item Viết tài liệu hướng dẫn sử dụng hoặc tài liệu kỹ thuật.
+    \item \textbf{Nhóm 1 -- Số liệu định lượng cứng}: liều lượng phân bón (kg/ha), nồng độ thuốc BVTV, năng suất kỳ vọng, mật độ gieo trồng --- lưu trong bảng \texttt{facts} của PostgreSQL.
+    \item \textbf{Nhóm 2 -- Quan hệ giữa thực thể}: giống cây phù hợp với loại đất nào, sâu bệnh nào thường gặp trên cây gì, kỹ thuật nào áp dụng khi nào --- lưu trong bảng \texttt{kg\_triples} (Knowledge Graph).
+    \item \textbf{Nhóm 3 -- Tài liệu kỹ thuật}: hướng dẫn canh tác, tài liệu tập huấn của Bộ Nông nghiệp, quy trình kỹ thuật địa phương --- lưu dưới dạng vector embedding trong ChromaDB.
+    \item \textbf{Nhóm 4 -- Dữ liệu IoT thời gian thực}: số liệu cảm biến, trạng thái thiết bị tưới, lịch tưới --- lấy trực tiếp từ API NextFarm qua lớp Tool.
 \end{itemize}
+
+Việc phân loại rõ ràng ngay từ đầu là nguyên tắc nền tảng của toàn bộ kiến trúc: dữ liệu định lượng ``cứng'' phải chính xác tuyệt đối, không thể lẫn với dữ liệu mô tả có thể diễn giải linh hoạt hơn.
+
+\subsubsection{Nghiên cứu ràng buộc tích hợp nền tảng NextFarm (Tuần 3)}
+
+Sinh viên nghiên cứu chi tiết tài liệu API của nền tảng NextFarm để xác định các endpoint phục vụ chatbot và thiết kế đặc tả ràng buộc tích hợp (\texttt{device\_safety\_design.md}). Kết quả tuần này xác định rõ 6 nhóm hàm tool cần xây dựng:
+
+\begin{itemize}
+    \item \texttt{get\_latest\_sensor}: lấy dữ liệu cảm biến mới nhất (nhiệt độ, độ ẩm đất, lượng mưa).
+    \item \texttt{get\_device\_status}: kiểm tra trạng thái thiết bị tưới (đang tưới / nghỉ / lỗi).
+    \item \texttt{get\_irrigation\_schedule}: xem lịch tưới sắp tới của trang trại.
+    \item \texttt{get\_irrigation\_history}: xem lịch sử tưới đã thực hiện.
+    \item \texttt{get\_alerts}: lấy cảnh báo bất thường từ hệ thống IoT.
+    \item \texttt{get\_command\_history}: xem lịch sử lệnh điều khiển thiết bị.
+\end{itemize}
+
+Đây là bước quan trọng để đảm bảo an toàn khi tích hợp với hệ thống IoT thật: sai sót trong phân quyền có thể dẫn đến rò rỉ dữ liệu giữa các trang trại hoặc gây rủi ro vận hành thiết bị ngoài ý muốn.
+
+\subsection{Giai đoạn 2 -- Xây dựng nền tảng kỹ thuật (Tuần 4--5)}
+
+\subsubsection{Thiết kế kiến trúc Tri-Layer RAG (Tuần 4)}
+
+Tuần 4 là tuần quan trọng nhất trong giai đoạn thiết kế: sinh viên xây dựng kiến trúc Tri-Layer RAG --- điểm khác biệt cốt lõi của hệ thống so với các chatbot RAG thông thường chỉ dùng một tầng document. Ba tầng được thiết kế như sau:
+
+\textbf{Tầng 1 -- Structured Fact Store (PostgreSQL)}: Lưu trữ các số liệu định lượng dưới dạng bảng quan hệ với đầy đủ điều kiện kèm theo (mùa vụ, loại đất, giai đoạn sinh trưởng, loại cây). Áp dụng \textit{Fail-Closed Policy}: các câu hỏi về liều lượng, nồng độ BẮT BUỘC phải có đủ điều kiện xác định; nếu thiếu thì chatbot sẽ hỏi lại người dùng thay vì trả lời sai.
+
+\textbf{Tầng 2 -- Knowledge Graph (PostgreSQL)}: Lưu trữ quan hệ giữa các thực thể nông nghiệp theo mô hình bộ ba \texttt{(subject -- relation -- object)} trong bảng \texttt{kg\_triples}. Thay vì dùng cơ sở dữ liệu đồ thị chuyên biệt như Neo4j, dự án sử dụng PostgreSQL với truy vấn SQL nối bảng --- quyết định này giúp đơn giản hóa hạ tầng vận hành đáng kể.
+
+\textbf{Tầng 3 -- Document Store / RAG (ChromaDB)}: Lưu trữ các đoạn văn bản (chunks) từ tài liệu kỹ thuật dưới dạng vector embedding, sử dụng mô hình \texttt{intfloat/multilingual-e5-large} (1024 chiều). Tầng này là lớp dự phòng khi Tầng 1 và Tầng 2 không tìm thấy thông tin.
+
+% ======================================================
+% GHI CHU ANH [2]: Can ve so do minh hoa 3 tang du lieu
+% (Fact Store, Knowledge Graph, Document Store)
+% va luong uu tien truy van: Tang 1 > Tang 2 > Tang 3.
+% Khi co anh: bo comment dong fbox, bo comment dong includegraphics
+% va xoa dong fbox.
+% Luu vao: images/tri-layer-rag.png
+% ======================================================
+
+\begin{sodo}[H]
+    \centering
+    % \includegraphics[width=0.85\textwidth]{images/tri-layer-rag.png}
+    \fbox{\parbox[c][4cm][c]{0.85\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn sơ đồ Tri-Layer RAG tại đây]} \\[6pt]
+        Tầng 1: Fact Store (PostgreSQL -- bảng facts) \\
+        Tầng 2: Knowledge Graph (PostgreSQL -- bảng kg\_triples) \\
+        Tầng 3: Document Store (ChromaDB + BM25 Okapi)
+    }}
+    \SodoCaption{Kiến trúc Tri-Layer RAG của hệ thống NextFarm Chatbot}{Sinh viên tự xây dựng}
+    \label{fig:tri-layer-rag}
+\end{sodo}
+
+\subsubsection{Xây dựng lớp Tool tích hợp NextFarm IoT (Tuần 5)}
+
+Lớp Tool đóng vai trò cầu nối giữa chatbot và API thời gian thực của nền tảng NextFarm, cho phép chatbot không chỉ trả lời câu hỏi từ cơ sở dữ liệu tĩnh mà còn đọc được tình trạng trang trại ngay tại thời điểm người dùng hỏi.
+
+Sinh viên hoàn thiện đầy đủ 6 hàm tool trong module \texttt{nextfarm\_tools.py}, đảm bảo mọi hàm đều tuân thủ nghiêm ngặt ràng buộc phân quyền (IAM): chatbot chỉ được truy cập dữ liệu của trang trại mà người dùng hiện tại được phép. Bổ sung module \texttt{tool\_router.py} định nghĩa các FastAPI route cho endpoint \texttt{/api/tools/*}, tách biệt logic tool khỏi phần xử lý chat chính để dễ bảo trì và mở rộng.
+
+\subsection{Giai đoạn 3 -- Xây dựng cơ chế định tuyến và tổng hợp (Tuần 6--7)}
+
+\subsubsection{Thiết kế lớp Router hai cấp (Tuần 6)}
+
+Lớp Router đóng vai trò ``bộ não định tuyến'' của hệ thống, phân tích câu hỏi của người dùng và quyết định nguồn dữ liệu / công cụ nào cần kích hoạt. Sinh viên thiết kế kiến trúc Router hai cấp để cân bằng tốc độ và độ chính xác:
+
+\textbf{Cấp 1 -- Fast-Path Rule Router} (\texttt{fast\_path\_router.py}): Sử dụng biểu thức chính quy (regex) và danh sách từ khóa để nhận dạng ý định câu hỏi mà không cần gọi API LLM, đạt thời gian xử lý dưới 5ms. Phân loại 5 nhóm ý định chính: \texttt{định\_lượng}, \texttt{phù\_hợp/quan\_hệ}, \texttt{diễn\_giải}, \texttt{ngoài\_phạm\_vi}, \texttt{chào\_hỏi}.
+
+\textbf{Cấp 2 -- LLM Router} (\texttt{query\_router.py}): Được kích hoạt khi Fast-Path Router không chắc chắn, sử dụng mô hình Gemini (gemini-3.1-flash-lite) để phân loại ý định và trích xuất các tham số ngữ cảnh (loại cây, mùa vụ, loại đất, giai đoạn sinh trưởng, tên giống). Router trả về kết quả dưới dạng JSON có cấu trúc để các tầng sau xử lý.
+
+Bảng~\ref{tab:router-intent} tổng hợp cơ chế phân loại ý định câu hỏi.
+
+\begin{table}[H]
+\caption{Bảng phân loại ý định câu hỏi của Router}
+\label{tab:router-intent}
+\centering
+\begin{tabular}{|p{3.5cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Loại ý định} & \textbf{Từ khóa điển hình} & \textbf{Nguồn dữ liệu ưu tiên} \\
+\hline
+Định lượng & liều lượng, bón bao nhiêu, kg/ha, nồng độ, tỉ lệ & Tầng 1 -- Fact Store \\
+\hline
+Phù hợp / Quan hệ & giống nào phù hợp, đất nào trồng được, sâu nào hại cây & Tầng 2 -- Knowledge Graph \\
+\hline
+Diễn giải & kỹ thuật, quy trình, tại sao, cách bón, hướng dẫn & Tầng 3 -- Document Store \\
+\hline
+Dữ liệu IoT & cảm biến, thiết bị, lịch tưới, tình trạng trang trại & Lớp Tool (NextFarm API) \\
+\hline
+Ngoài phạm vi & bất động sản, thể thao, chứng khoán, du lịch & Từ chối (không trả lời) \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp}
+\end{table}
+
+\subsubsection{Thiết kế lớp Output và cơ chế tổng hợp câu trả lời (Tuần 7)}
+
+Lớp Output chịu trách nhiệm tổng hợp dữ liệu từ nhiều nguồn khác nhau thành một câu trả lời mạch lạc, dễ hiểu cho người dùng là nông dân. Sinh viên hoàn thiện module tổng hợp câu trả lời với các yêu cầu:
+
+\begin{itemize}
+    \item Ưu tiên dữ liệu từ Tầng 1 (Facts) > Tầng 2 (KG) > Lớp Tool > Tầng 3 (Docs) khi có xung đột.
+    \item Xây dựng bảng ánh xạ \texttt{attribute\_to\_table} để tự động định hướng truy vấn đúng tầng.
+    \item Sử dụng mô hình Gemini (gemini-3.6-flash) để diễn đạt câu trả lời tự nhiên, đúng thuật ngữ nông nghiệp địa phương.
+    \item Đảm bảo câu trả lời luôn kèm theo thông tin nguồn gốc dữ liệu (truy xuất được).
+\end{itemize}
+
+Đồng thời, sinh viên xây dựng module \texttt{validator.py} (Guardrail) sử dụng LLM-as-Judge để đánh giá xem câu trả lời có được xây dựng dựa trên dữ liệu thực tế (groundedness) hay mô hình đang tự ``bịa đặt'' thông tin nông nghiệp.
+
+\subsection{Giai đoạn 4 -- Hoàn thiện và tích hợp toàn hệ thống (Tuần 8--9)}
+
+\subsubsection{Xây dựng hoàn chỉnh tầng Knowledge Graph (Tuần 8)}
+
+Sinh viên tập trung xây dựng hoàn chỉnh tầng Knowledge Graph với dữ liệu thực tế:
+
+\begin{itemize}
+    \item Thiết kế schema bảng \texttt{kg\_triples} theo mô hình: \texttt{(subject, relation, object, object\_type, chunk\_id, confidence)}.
+    \item Nạp dữ liệu quan hệ cho 10 loại cây trồng ưu tiên, mỗi cây có quan hệ về: đất phù hợp, mùa vụ thích hợp, sâu bệnh thường gặp và kỹ thuật canh tác tương ứng.
+    \item Xây dựng cơ chế truy vấn quan hệ nhiều bước (multi-hop query) thông qua SQL JOIN, ví dụ: từ giống lúa OM5451 suy ra loại đất phù hợp, từ đó suy tiếp kỹ thuật canh tác tương ứng.
+    \item Gán trọng số độ tin cậy (\texttt{confidence}) cho từng bộ ba quan hệ dựa trên nguồn trích dẫn.
+\end{itemize}
+
+\subsubsection{Tích hợp toàn bộ pipeline và phát hiện lỗi hệ thống (Tuần 9)}
+
+Tuần cuối tập trung vào rà soát, tích hợp hoàn chỉnh toàn bộ pipeline và kiểm thử end-to-end. Sinh viên phát hiện một lỗi nghiêm trọng: hàm lấy dữ liệu tool trong Retrieval Plan mới chỉ tích hợp 2 trong số 6 hàm tool đã xây dựng (\texttt{get\_latest\_sensor} và \texttt{get\_alerts}), còn thiếu hoàn toàn \texttt{get\_device\_status}, \texttt{get\_irrigation\_schedule}, \texttt{get\_irrigation\_history} và \texttt{get\_command\_history}. Hậu quả là dù Router đã phân loại đúng loại câu hỏi, chatbot vẫn không có dữ liệu để trả lời vì bước lấy dữ liệu tool phía sau bị thiếu. Sinh viên đã khắc phục ngay trong tuần, bổ sung đầy đủ 4 hàm còn thiếu và kiểm thử lại toàn bộ pipeline.
+
+Bài học quan trọng rút ra: kiểm thử từng module riêng lẻ không đảm bảo hệ thống hoạt động đúng khi tích hợp; cần luôn có bước kiểm thử end-to-end xuyên suốt toàn bộ luồng xử lý.
 
 \section{Chi tiết nhật ký thực tập}
 
-Sinh viên có thể trình bày nhật ký thực tập theo bảng dưới đây.
-
-\begin{longtable}{|c|p{3cm}|p{6cm}|p{4cm}|}
-\caption{Nhật ký thực tập}
+\begin{longtable}{|c|p{3.0cm}|p{5.5cm}|p{4.5cm}|}
+\caption{Nhật ký thực tập chi tiết}
 \label{tab:nhat-ky-thuc-tap} \\
 \hline
 \textbf{Tuần} & \textbf{Thời gian} & \textbf{Nội dung công việc} & \textbf{Kết quả đạt được} \\
@@ -35,25 +260,120 @@ Sinh viên có thể trình bày nhật ký thực tập theo bảng dưới đ�
 \hline
 \endhead
 
-1 & Từ ngày ... đến ngày ...
-& Tìm hiểu doanh nghiệp, phòng ban thực tập, quy trình làm việc.
-& Nắm được cơ cấu tổ chức, nội quy và công việc được giao. \\
+1 & 06/07/2026 -- 12/07/2026
+& Nghiên cứu, phân tích yêu cầu hệ thống AI nhận diện sâu bệnh: cơ chế lọc ảnh độ tin cậy thấp, hàng chờ duyệt, lưu vết, phân tích nhóm lỗi, quản lý phiên bản mô hình, so sánh hiệu năng.
+& Xác định được các yêu cầu nghiệp vụ cần có; làm quen với đặc thù bài toán AI nông nghiệp thực tế. \\
 \hline
 
-2 & Từ ngày ... đến ngày ...
-& Cài đặt môi trường làm việc, tìm hiểu công nghệ sử dụng trong dự án.
-& Cài đặt thành công môi trường, chạy thử dự án mẫu. \\
+2 & 13/07/2026 -- 19/07/2026
+& Khảo sát yêu cầu nghiệp vụ chatbot nông nghiệp; phân loại 4 nhóm nguồn dữ liệu (Fact Store, Knowledge Graph, Document Store, IoT Tool); xác định tầng lưu trữ tương ứng cho từng nhóm.
+& Hoàn thành bảng phân loại 4 nhóm nguồn dữ liệu và thiết kế sơ bộ kiến trúc tổng thể. Đây là nền tảng cho toàn bộ thiết kế kiến trúc hệ thống. \\
 \hline
 
-3 & Từ ngày ... đến ngày ...
-& Tham gia thực hiện một số nhiệm vụ được giao trong dự án.
-& Hoàn thành các công việc theo yêu cầu của người hướng dẫn. \\
+3 & 20/07/2026 -- 26/07/2026
+& Nghiên cứu API NextFarm; thiết kế đặc tả ràng buộc tích hợp (\texttt{device\_safety\_design.md}); xác định 6 nhóm hàm tool cần xây dựng; thiết kế cơ chế IAM phân quyền theo trang trại.
+& Hoàn thành tài liệu đặc tả ràng buộc tích hợp; xác định đầy đủ 6 hàm tool; thiết kế Farm-level IAM. \\
 \hline
 
-4 & Từ ngày ... đến ngày ...
-& Kiểm thử, chỉnh sửa lỗi, hoàn thiện tài liệu hoặc báo cáo kết quả.
-& Hoàn thiện sản phẩm/công việc được giao. \\
+4 & 27/07/2026 -- 02/08/2026
+& Thiết kế kiến trúc Tri-Layer RAG; thiết kế schema PostgreSQL cho bảng \texttt{facts} và \texttt{kg\_triples}; cấu trúc lưu trữ vector ChromaDB; xây dựng module \texttt{layer1\_facts.py} và \texttt{layer3\_docs.py}; tích hợp mô hình embedding multilingual-e5-large.
+& Hoàn thiện thiết kế schema; các module tầng 1 và tầng 3 hoạt động ổn định; Fail-Closed Policy được hiện thực hóa trong code. \\
+\hline
+
+5 & 03/08/2026 -- 09/08/2026
+& Xây dựng lớp Tool: hoàn thiện 6 hàm tool trong \texttt{nextfarm\_tools.py}; kiểm thử với dữ liệu giả lập (simulator); xây dựng \texttt{tool\_router.py} với các FastAPI route; đảm bảo tuân thủ ràng buộc IAM.
+& Hoàn thiện đầy đủ 6 hàm tool, kiểm thử thành công; \texttt{tool\_router.py} hoạt động với các route REST chuẩn. \\
+\hline
+
+6 & 10/08/2026 -- 16/08/2026
+& Thiết kế lớp Router hai cấp: hoàn thiện \texttt{fast\_path\_router.py} (rule-based, $<$5ms, không gọi LLM); hoàn thiện \texttt{query\_router.py} (LLM Router dùng Gemini); phân loại 5 nhóm ý định câu hỏi.
+& \texttt{fast\_path\_router.py} xử lý được phần lớn câu hỏi thường gặp, giảm số lần gọi LLM API; \texttt{query\_router.py} phân loại ý định chính xác cho câu hỏi phức tạp. \\
+\hline
+
+7 & 17/08/2026 -- 23/08/2026
+& Thiết kế lớp Output (Synthesis): hoàn thiện module tổng hợp câu trả lời từ đa nguồn; xây dựng bảng ánh xạ \texttt{attribute\_to\_table}; xây dựng module \texttt{validator.py} (Guardrail LLM-as-Judge).
+& Tổng hợp thành công câu trả lời từ cả 3 tầng dữ liệu và lớp Tool trong cùng một câu trả lời mạch lạc; cơ chế Guardrail phát hiện được trường hợp LLM tự ``bịa'' thông tin. \\
+\hline
+
+8 & 24/08/2026 -- 30/08/2026
+& Xây dựng hoàn chỉnh tầng Knowledge Graph: thiết kế schema \texttt{kg\_triples}; nạp dữ liệu quan hệ cho 10 loại cây trồng chính; xây dựng cơ chế truy vấn multi-hop; gán trọng số độ tin cậy.
+& Hoàn thiện \texttt{layer2\_kg.py} và bảng \texttt{kg\_triples}; kiểm thử thành công câu hỏi quan hệ; nguyên tắc ``LLM không tự suy luận quan hệ'' được tuân thủ tuyệt đối. \\
+\hline
+
+9 & 31/08/2026 -- 07/09/2026
+& Rà soát và tích hợp toàn bộ pipeline; phát hiện và sửa lỗi nghiêm trọng (Retrieval Plan thiếu 4 hàm tool); bổ sung xử lý câu hỏi multi-turn; kiểm thử end-to-end toàn diện; xây dựng cơ chế ghi log định tuyến.
+& Hoàn thiện tích hợp toàn bộ hệ thống; sửa đầy đủ lỗi phát hiện được; hệ thống hoạt động ổn định qua các đợt kiểm thử end-to-end. \\
 \hline
 
 \end{longtable}
 \Nguon{Sinh viên tổng hợp}
+
+\section{Kết quả và sản phẩm thực tập}
+
+\subsection{Sản phẩm kỹ thuật đạt được}
+
+Sau 9 tuần thực tập, sinh viên đã hoàn thành các sản phẩm kỹ thuật sau:
+
+\begin{itemize}
+    \item \textbf{Hệ thống backend hoàn chỉnh}: \texttt{backend/app.py} (FastAPI, hơn 1.800 dòng code) tích hợp đầy đủ API xác thực, chat và quản trị.
+    \item \textbf{Hệ thống Tri-Layer RAG}: 3 module tầng dữ liệu (\texttt{layer1\_facts.py}, \texttt{layer2\_kg.py}, \texttt{layer3\_docs.py}) hoạt động độc lập và phối hợp thông qua \texttt{retrieval\_plan.py}.
+    \item \textbf{Router hai cấp}: \texttt{fast\_path\_router.py} (rule-based, $<$5ms) và \texttt{query\_router.py} (LLM-based) làm dự phòng.
+    \item \textbf{Lớp Tool IoT}: 6 hàm tool tích hợp với API NextFarm, đảm bảo phân quyền theo trang trại.
+    \item \textbf{Pipeline nạp tài liệu}: \texttt{data\_pipeline.py} và \texttt{chunker.py} xử lý tài liệu PDF/DOCX thành các chunk có cấu trúc.
+    \item \textbf{Hệ thống giám sát}: \texttt{monitoring.py} thu thập metrics vận hành thời gian thực.
+    \item \textbf{Bộ benchmark}: hơn 260 câu hỏi kiểm thử (\texttt{data/benchmark\_questions.json}) và module đánh giá tự động (\texttt{benchmark\_evaluator.py}).
+    \item \textbf{Giao diện frontend}: trang chat người dùng (\texttt{index.html}) và trang quản trị (\texttt{admin.html}).
+\end{itemize}
+
+\subsection{Kết quả kiểm thử}
+
+Hệ thống được kiểm thử với bộ câu hỏi benchmark hơn 260 câu đại diện cho các tình huống thực tế: câu hỏi về liều lượng phân bón và thuốc BVTV (kiểm tra Fail-Closed Policy); câu hỏi về quan hệ giống -- đất -- mùa vụ (kiểm tra Knowledge Graph); câu hỏi về kỹ thuật canh tác từ tài liệu (kiểm tra RAG tầng 3); câu hỏi về dữ liệu IoT thời gian thực (kiểm tra lớp Tool); câu hỏi ngoài phạm vi và câu hỏi cố tình truy cập trái phép (kiểm tra bảo mật).
+
+% ======================================================
+% GHI CHU ANH [3]: Chup man hinh ket qua benchmark
+% tu giao dien Admin Dashboard hoac tu output
+% data/acceptance_results.json.
+% Luu vao: images/benchmark-results.png
+% ======================================================
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.90\textwidth]{images/benchmark-results.png}
+    \fbox{\parbox[c][4cm][c]{0.90\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn ảnh kết quả kiểm thử / benchmark tại đây]} \\[6pt]
+        Chụp từ: Admin Dashboard hoặc file data/acceptance\_results.json
+    }}
+    \caption{Kết quả kiểm thử hệ thống NextFarm Chatbot}
+    \label{fig:benchmark-results}
+    \Nguon{Sinh viên tổng hợp từ dữ liệu acceptance\_results.json}
+\end{figure}
+
+% ======================================================
+% GHI CHU ANH [4]: Chup man hinh giao dien chat
+% (index.html) khi chatbot dang hoat dong.
+% Luu vao: images/giao-dien-chat.png
+% ======================================================
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.90\textwidth]{images/giao-dien-chat.png}
+    \fbox{\parbox[c][5cm][c]{0.90\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn ảnh giao diện chatbot đang hoạt động tại đây]} \\[6pt]
+        Chụp màn hình: trang index.html khi chatbot đang chạy, có cuộc hội thoại mẫu
+    }}
+    \caption{Giao diện chatbot NextFarm khi hoạt động}
+    \label{fig:giao-dien-chat}
+    \Nguon{Sinh viên tự chụp màn hình}
+\end{figure}
+
+\subsection{Bài học kinh nghiệm}
+
+Qua quá trình thực tập, sinh viên rút ra một số bài học kinh nghiệm quan trọng:
+
+\begin{itemize}
+    \item \textbf{Nguyên tắc thiết kế an toàn}: Đối với ứng dụng AI phục vụ người dùng cuối trong lĩnh vực có tác động trực tiếp đến kinh tế (liều lượng phân bón, thuốc BVTV), việc áp dụng Fail-Closed Policy và không cho phép mô hình ngôn ngữ tự sinh số liệu là bắt buộc.
+    \item \textbf{Kiểm thử tích hợp}: Kiểm thử từng module riêng lẻ không đủ để đảm bảo hệ thống hoạt động đúng khi tích hợp; luôn cần kiểm thử end-to-end xuyên suốt toàn bộ luồng xử lý.
+    \item \textbf{Tối ưu chi phí và tốc độ}: Kiến trúc router hai cấp (rule-based + LLM) giúp giảm đáng kể số lần gọi LLM API, từ đó giảm chi phí và độ trễ mà không ảnh hưởng đến độ chính xác tổng thể.
+    \item \textbf{Phân tầng dữ liệu}: Phân loại rõ ràng các nguồn dữ liệu theo mức độ tin cậy từ giai đoạn thiết kế giúp kiểm soát chất lượng câu trả lời tốt hơn nhiều so với cách tiếp cận RAG thông thường.
+    \item \textbf{Đơn giản hóa hạ tầng}: Dùng PostgreSQL thay cho Neo4j cho Knowledge Graph là ví dụ điển hình về việc chọn giải pháp đơn giản hơn nhưng vẫn đủ đáp ứng yêu cầu, giúp giảm độ phức tạp vận hành đáng kể.
+\end{itemize}
