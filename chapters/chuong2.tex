@@ -14,7 +14,11 @@ Trong thời gian thực tập tại Công ty Cổ Phần Tương Lai NEXTX, sin
 
 \textbf{Tên dự án}: NextFarm Chatbot Nông Nghiệp AI (phiên bản 2.2)
 
-\textbf{Mục tiêu}: Xây dựng hệ thống chatbot có khả năng trả lời chính xác và đáng tin cậy các câu hỏi nông nghiệp, đồng thời tích hợp trực tiếp với nền tảng IoT NextFarm để đọc dữ liệu cảm biến và trạng thái thiết bị theo thời gian thực.
+\textbf{Mục tiêu chính}: Xây dựng hệ thống chatbot có khả năng trả lời chính xác và đáng tin cậy các câu hỏi nông nghiệp, đồng thời tích hợp trực tiếp với nền tảng IoT NextFarm để đọc dữ liệu cảm biến và trạng thái thiết bị theo thời gian thực.
+
+\textbf{Bối cảnh hình thành dự án}: Nền tảng NextFarm của công ty NEXTX đang phục vụ hàng trăm trang trại với hệ thống cảm biến đất, cảm biến thời tiết và thiết bị tưới tự động được kết nối qua IoT. Tuy nhiên, nông dân --- đối tượng người dùng chính --- gặp khó khăn lớn khi phải đọc bảng số liệu thô trên màn hình. Nhu cầu thực tế là một giao diện hội thoại tự nhiên (chatbot) để nông dân có thể hỏi bằng tiếng Việt thông thường, ví dụ: ``Đất khu A đang thiếu nước không?'', ``Lúa OM5451 bón phân Urea bao nhiêu kg/ha vào giai đoạn đẻ nhánh?'' và nhận được câu trả lời chính xác, có nguồn trích dẫn.
+
+\textbf{Thách thức kỹ thuật cốt lõi}: Các chatbot thông thường dùng mô hình ngôn ngữ lớn (LLM) có thể ``bịa'' số liệu nông nghiệp --- ví dụ nói sai liều lượng thuốc BVTV --- gây thiệt hại kinh tế trực tiếp cho nông dân. Do đó, yêu cầu bất khả thương lượng của dự án là: \textbf{mọi số liệu định lượng trả về cho người dùng PHẢI được truy xuất từ nguồn dữ liệu đã được kiểm chứng, không được để LLM tự sinh ra}.
 
 \subsection{Phạm vi công việc}
 
@@ -109,7 +113,16 @@ Toàn bộ quá trình thực tập kéo dài 9 tuần (từ 06/07/2026 đến 0
 
 \subsubsection{Phân tích hệ thống AI nhận diện sâu bệnh (Tuần 1)}
 
-Ở tuần đầu tiên, sinh viên được giao nhiệm vụ tìm hiểu và phân tích yêu cầu cho hệ thống AI nhận diện sâu bệnh cây trồng --- một tính năng dự kiến tích hợp vào nền tảng NextFarm. Qua quá trình nghiên cứu, sinh viên đã xác định được các yêu cầu nghiệp vụ cơ bản: cơ chế lọc ảnh có độ tin cậy thấp để đưa vào hàng chờ duyệt thủ công, lưu vết đầy đủ quá trình xử lý, phân tích nhóm lỗi theo danh mục bệnh, quản lý phiên bản mô hình và so sánh hiệu năng giữa các phiên bản. Công việc này giúp sinh viên làm quen với đặc thù bài toán AI nông nghiệp, hiểu rõ khoảng cách giữa mô hình học sâu và ứng dụng thực tế trong điều kiện ảnh thực địa chất lượng thấp.
+Ở tuần đầu tiên, sinh viên được giao nhiệm vụ tìm hiểu và phân tích yêu cầu cho hệ thống AI nhận diện sâu bệnh cây trồng --- một tính năng dự kiến tích hợp vào nền tảng NextFarm. Qua quá trình nghiên cứu, sinh viên đã xác định được các yêu cầu nghiệp vụ cơ bản:
+
+\begin{itemize}
+    \item \textbf{Cơ chế lọc ảnh độ tin cậy thấp}: Khi mô hình phân loại trả về xác suất dưới ngưỡng cho phép (ví dụ dưới 0.7), ảnh phải được đưa vào hàng chờ để chuyên gia xác nhận thủ công thay vì tự động gán nhãn.
+    \item \textbf{Lưu vết toàn diện}: Mỗi ảnh đi qua hệ thống phải có log đầy đủ: thời gian xử lý, phiên bản mô hình sử dụng, xác suất từng lớp bệnh, người dùng gửi ảnh và kết quả phán quyết cuối cùng.
+    \item \textbf{Phân tích nhóm lỗi}: Thống kê và phân loại các trường hợp mô hình dự đoán sai theo danh mục bệnh để phục vụ cải thiện mô hình định kỳ.
+    \item \textbf{Quản lý phiên bản và A/B Testing}: Hỗ trợ triển khai nhiều phiên bản mô hình song song để so sánh hiệu năng trước khi cập nhật chính thức.
+\end{itemize}
+
+Công việc này giúp sinh viên làm quen với đặc thù bài toán AI nông nghiệp, hiểu rõ khoảng cách giữa mô hình học sâu và ứng dụng thực tế trong điều kiện ảnh thực địa chất lượng thấp. Đây cũng là nền tảng để sinh viên nhận thức được tầm quan trọng của cơ chế kiểm soát chất lượng trong các hệ thống AI, điều sẽ được áp dụng sâu hơn trong dự án chatbot ở các tuần tiếp theo.
 
 \subsubsection{Xác định và phân loại nguồn dữ liệu (Tuần 2)}
 
@@ -124,6 +137,28 @@ Tuần 2 đánh dấu bước chuyển sang nhiệm vụ chính: xây dựng cha
 
 Việc phân loại rõ ràng ngay từ đầu là nguyên tắc nền tảng của toàn bộ kiến trúc: dữ liệu định lượng ``cứng'' phải chính xác tuyệt đối, không thể lẫn với dữ liệu mô tả có thể diễn giải linh hoạt hơn.
 
+Kết quả tuần 2 được ghi lại dưới dạng bảng phân loại nguồn dữ liệu, như trình bày tại Bảng~\ref{tab:phan-loai-du-lieu}.
+
+\begin{table}[H]
+\caption{Phân loại nguồn dữ liệu và chiến lược lưu trữ}
+\label{tab:phan-loai-du-lieu}
+\centering
+\begin{tabular}{|p{3cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|}
+\hline
+\textbf{Nhóm dữ liệu} & \textbf{Ví dụ cụ thể} & \textbf{Yêu cầu độ chính xác} & \textbf{Tầng lưu trữ} \\
+\hline
+Số liệu định lượng & Liều Urea: 80--100 kg/ha, nồng độ Carbendazim: 0.1\% & Tuyệt đối, không sai lệch & PostgreSQL (bảng facts) \\
+\hline
+Quan hệ thực thể & Lúa OM5451 phù hợp đất phèn nhẹ & Cao, có trọng số độ tin cậy & PostgreSQL (bảng kg\_triples) \\
+\hline
+Tài liệu kỹ thuật & Quy trình bón phân đón đòng cho lúa & Trung bình, có thể diễn giải & ChromaDB (vector embedding) \\
+\hline
+Dữ liệu IoT thực tế & Nhiệt độ đất khu A lúc 8:00 là 28°C & Thời gian thực, luôn thay đổi & NextFarm API (lớp Tool) \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp}
+\end{table}
+
 \subsubsection{Nghiên cứu ràng buộc tích hợp nền tảng NextFarm (Tuần 3)}
 
 Sinh viên nghiên cứu chi tiết tài liệu API của nền tảng NextFarm để xác định các endpoint phục vụ chatbot và thiết kế đặc tả ràng buộc tích hợp (\texttt{device\_safety\_design.md}). Kết quả tuần này xác định rõ 6 nhóm hàm tool cần xây dựng:
@@ -137,7 +172,33 @@ Sinh viên nghiên cứu chi tiết tài liệu API của nền tảng NextFarm 
     \item \texttt{get\_command\_history}: xem lịch sử lệnh điều khiển thiết bị.
 \end{itemize}
 
-Đây là bước quan trọng để đảm bảo an toàn khi tích hợp với hệ thống IoT thật: sai sót trong phân quyền có thể dẫn đến rò rỉ dữ liệu giữa các trang trại hoặc gây rủi ro vận hành thiết bị ngoài ý muốn.
+Bảng~\ref{tab:iac-tool} mô tả chi tiết 6 hàm tool và tham số đầu vào bắt buộc:
+
+\begin{table}[H]
+\caption{Đặc tả 6 hàm tool tích hợp NextFarm API}
+\label{tab:iac-tool}
+\centering
+\begin{tabular}{|p{4cm}|p{4.5cm}|p{5cm}|}
+\hline
+\textbf{Hàm tool} & \textbf{Tham số bắt buộc} & \textbf{Dữ liệu trả về} \\
+\hline
+\texttt{get\_latest\_sensor} & farm\_id, zone\_id & Nhiệt độ, độ ẩm đất, lượng mưa (JSON) \\
+\hline
+\texttt{get\_device\_status} & farm\_id, device\_id & Trạng thái thiết bị: ON/OFF/ERROR \\
+\hline
+\texttt{get\_irrigation\_schedule} & farm\_id, từ ngày--đến ngày & Danh sách lịch tưới sắp tới (JSON) \\
+\hline
+\texttt{get\_irrigation\_history} & farm\_id, từ ngày--đến ngày & Lịch sử các lần tưới đã thực hiện \\
+\hline
+\texttt{get\_alerts} & farm\_id, mức độ & Danh sách cảnh báo bất thường \\
+\hline
+\texttt{get\_command\_history} & farm\_id, device\_id & Lịch sử lệnh điều khiển thiết bị \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp từ tài liệu API NextFarm}
+\end{table}
+
+Đây là bước quan trọng để đảm bảo an toàn khi tích hợp với hệ thống IoT thật: sai sót trong phân quyền có thể dẫn đến rò rỉ dữ liệu giữa các trang trại hoặc gây rủi ro vận hành thiết bị ngoài ý muốn. Toàn bộ 6 hàm tool đều bắt buộc tham số \texttt{farm\_id} và được kiểm tra quyền truy cập tại lớp middleware của FastAPI trước khi xử lý.
 
 \subsection{Giai đoạn 2 -- Xây dựng nền tảng kỹ thuật (Tuần 4--5)}
 
@@ -145,11 +206,43 @@ Sinh viên nghiên cứu chi tiết tài liệu API của nền tảng NextFarm 
 
 Tuần 4 là tuần quan trọng nhất trong giai đoạn thiết kế: sinh viên xây dựng kiến trúc Tri-Layer RAG --- điểm khác biệt cốt lõi của hệ thống so với các chatbot RAG thông thường chỉ dùng một tầng document. Ba tầng được thiết kế như sau:
 
-\textbf{Tầng 1 -- Structured Fact Store (PostgreSQL)}: Lưu trữ các số liệu định lượng dưới dạng bảng quan hệ với đầy đủ điều kiện kèm theo (mùa vụ, loại đất, giai đoạn sinh trưởng, loại cây). Áp dụng \textit{Fail-Closed Policy}: các câu hỏi về liều lượng, nồng độ BẮT BUỘC phải có đủ điều kiện xác định; nếu thiếu thì chatbot sẽ hỏi lại người dùng thay vì trả lời sai.
+\textbf{Tầng 1 -- Structured Fact Store (PostgreSQL)}: Lưu trữ các số liệu định lượng dưới dạng bảng quan hệ với đầy đủ điều kiện kèm theo (mùa vụ, loại đất, giai đoạn sinh trưởng, loại cây). Áp dụng \textit{Fail-Closed Policy}: các câu hỏi về liều lượng, nồng độ BẮT BUỘC phải có đủ điều kiện xác định (ít nhất 1 trong 3: mùa vụ, loại đất hoặc giai đoạn sinh trưởng); nếu thiếu thì chatbot sẽ hỏi lại người dùng thay vì trả lời sai. Schema bảng \texttt{facts} được thiết kế như Bảng~\ref{tab:schema-facts}.
 
-\textbf{Tầng 2 -- Knowledge Graph (PostgreSQL)}: Lưu trữ quan hệ giữa các thực thể nông nghiệp theo mô hình bộ ba \texttt{(subject -- relation -- object)} trong bảng \texttt{kg\_triples}. Thay vì dùng cơ sở dữ liệu đồ thị chuyên biệt như Neo4j, dự án sử dụng PostgreSQL với truy vấn SQL nối bảng --- quyết định này giúp đơn giản hóa hạ tầng vận hành đáng kể.
+\begin{table}[H]
+\caption{Schema bảng \texttt{facts} (Tầng 1 -- Fact Store)}
+\label{tab:schema-facts}
+\centering
+\begin{tabular}{|p{3.5cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\textbf{Cột} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả} \\
+\hline
+\texttt{id} & SERIAL PRIMARY KEY & Khóa chính tự tăng \\
+\hline
+\texttt{crop\_type} & VARCHAR(100) & Loại cây trồng (lúa, cà phê, sầu riêng...) \\
+\hline
+\texttt{attribute} & VARCHAR(200) & Tên thuộc tính (liều\_urea, nong\_do\_thuoc...) \\
+\hline
+\texttt{value} & NUMERIC & Giá trị số liệu \\
+\hline
+\texttt{unit} & VARCHAR(50) & Đơn vị (kg/ha, \%, lần/vụ...) \\
+\hline
+\texttt{season} & VARCHAR(100) & Mùa vụ (Đông Xuân, Hè Thu, Mùa...) \\
+\hline
+\texttt{soil\_type} & VARCHAR(100) & Loại đất (phèn, cát, thịt, sét...) \\
+\hline
+\texttt{growth\_stage} & VARCHAR(100) & Giai đoạn sinh trưởng (đẻ nhánh, trổ đòng...) \\
+\hline
+\texttt{source\_doc} & TEXT & Tài liệu nguồn gốc trích dẫn \\
+\hline
+\texttt{confidence} & NUMERIC(3,2) & Độ tin cậy (0.00--1.00) \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tự thiết kế}
+\end{table}
 
-\textbf{Tầng 3 -- Document Store / RAG (ChromaDB)}: Lưu trữ các đoạn văn bản (chunks) từ tài liệu kỹ thuật dưới dạng vector embedding, sử dụng mô hình \texttt{intfloat/multilingual-e5-large} (1024 chiều). Tầng này là lớp dự phòng khi Tầng 1 và Tầng 2 không tìm thấy thông tin.
+\textbf{Tầng 2 -- Knowledge Graph (PostgreSQL)}: Lưu trữ quan hệ giữa các thực thể nông nghiệp theo mô hình bộ ba \texttt{(subject -- relation -- object)} trong bảng \texttt{kg\_triples}. Thay vì dùng cơ sở dữ liệu đồ thị chuyên biệt như Neo4j, dự án sử dụng PostgreSQL với truy vấn SQL nối bảng --- quyết định này giúp đơn giản hóa hạ tầng vận hành đáng kể vì tận dụng được cùng server PostgreSQL đã dùng cho Fact Store.
+
+\textbf{Tầng 3 -- Document Store / RAG (ChromaDB)}: Lưu trữ các đoạn văn bản (chunks) từ tài liệu kỹ thuật dưới dạng vector embedding, sử dụng mô hình \texttt{intfloat/multilingual-e5-large} (1024 chiều, hỗ trợ tiếng Việt tốt). Mỗi chunk được lưu kèm metadata bao gồm: tên tài liệu nguồn, số trang, loại cây liên quan và loại thông tin (kỹ thuật, bệnh dịch, giống cây). Tầng này là lớp dự phòng khi Tầng 1 và Tầng 2 không tìm thấy thông tin, kết hợp với thuật toán BM25 Okapi (truy xuất thưa) để tăng khả năng tìm kiếm chính xác theo từ khóa đặc thù nông nghiệp.
 
 % ======================================================
 % GHI CHU ANH [2]: Can ve so do minh hoa 3 tang du lieu
@@ -175,9 +268,19 @@ Tuần 4 là tuần quan trọng nhất trong giai đoạn thiết kế: sinh vi
 
 \subsubsection{Xây dựng lớp Tool tích hợp NextFarm IoT (Tuần 5)}
 
-Lớp Tool đóng vai trò cầu nối giữa chatbot và API thời gian thực của nền tảng NextFarm, cho phép chatbot không chỉ trả lời câu hỏi từ cơ sở dữ liệu tĩnh mà còn đọc được tình trạng trang trại ngay tại thời điểm người dùng hỏi.
+Lớp Tool đóng vai trò cầu nối giữa chatbot và API thời gian thực của nền tảng NextFarm, cho phép chatbot không chỉ trả lời câu hỏi từ cơ sở dữ liệu tĩnh mà còn đọc được tình trạng trang trại ngay tại thời điểm người dùng hỏi. Đây là tính năng phân biệt NextFarm Chatbot với các chatbot nông nghiệp thông thường chỉ tra cứu tài liệu.
 
-Sinh viên hoàn thiện đầy đủ 6 hàm tool trong module \texttt{nextfarm\_tools.py}, đảm bảo mọi hàm đều tuân thủ nghiêm ngặt ràng buộc phân quyền (IAM): chatbot chỉ được truy cập dữ liệu của trang trại mà người dùng hiện tại được phép. Bổ sung module \texttt{tool\_router.py} định nghĩa các FastAPI route cho endpoint \texttt{/api/tools/*}, tách biệt logic tool khỏi phần xử lý chat chính để dễ bảo trì và mở rộng.
+Sinh viên hoàn thiện đầy đủ 6 hàm tool trong module \texttt{nextfarm\_tools.py}, đảm bảo mọi hàm đều tuân thủ nghiêm ngặt ràng buộc phân quyền (IAM): chatbot chỉ được truy cập dữ liệu của trang trại mà người dùng hiện tại được phép. Luồng xử lý khi một Tool được gọi như sau:
+
+\begin{enumerate}
+    \item Router xác định câu hỏi thuộc loại IoT và trích xuất tham số: \texttt{farm\_id}, \texttt{zone\_id}, khoảng thời gian.
+    \item Middleware kiểm tra xem \texttt{farm\_id} có nằm trong danh sách trang trại mà người dùng hiện tại được phép truy cập không.
+    \item Nếu hợp lệ: gọi hàm tool tương ứng, nhận về JSON kết quả từ NextFarm API.
+    \item Nếu không hợp lệ: trả về lỗi phân quyền ngay lập tức, không thực hiện bất kỳ truy vấn nào.
+    \item Kết quả JSON từ tool được đưa vào lớp Synthesis để tổng hợp thành câu trả lời tự nhiên.
+\end{enumerate}
+
+Bổ sung module \texttt{tool\_router.py} định nghĩa các FastAPI route cho endpoint \texttt{/api/tools/*}, tách biệt logic tool khỏi phần xử lý chat chính để dễ bảo trì và mở rộng. Toàn bộ 6 hàm tool đã được kiểm thử với dữ liệu giả lập (simulator) mô phỏng các thiết bị IoT thực tế, bao gồm cả các trường hợp biên: cảm biến mất kết nối, thiết bị báo lỗi, dữ liệu cũ hơn ngưỡng cho phép.
 
 \subsection{Giai đoạn 3 -- Xây dựng cơ chế định tuyến và tổng hợp (Tuần 6--7)}
 
@@ -185,9 +288,22 @@ Sinh viên hoàn thiện đầy đủ 6 hàm tool trong module \texttt{nextfarm\
 
 Lớp Router đóng vai trò ``bộ não định tuyến'' của hệ thống, phân tích câu hỏi của người dùng và quyết định nguồn dữ liệu / công cụ nào cần kích hoạt. Sinh viên thiết kế kiến trúc Router hai cấp để cân bằng tốc độ và độ chính xác:
 
-\textbf{Cấp 1 -- Fast-Path Rule Router} (\texttt{fast\_path\_router.py}): Sử dụng biểu thức chính quy (regex) và danh sách từ khóa để nhận dạng ý định câu hỏi mà không cần gọi API LLM, đạt thời gian xử lý dưới 5ms. Phân loại 5 nhóm ý định chính: \texttt{định\_lượng}, \texttt{phù\_hợp/quan\_hệ}, \texttt{diễn\_giải}, \texttt{ngoài\_phạm\_vi}, \texttt{chào\_hỏi}.
+\textbf{Cấp 1 -- Fast-Path Rule Router} (\texttt{fast\_path\_router.py}): Sử dụng biểu thức chính quy (regex) và danh sách từ khóa để nhận dạng ý định câu hỏi mà không cần gọi API LLM, đạt thời gian xử lý dưới 5ms. Ưu điểm lớn nhất là tiết kiệm chi phí gọi API và giảm độ trễ đáng kể. Phân loại 5 nhóm ý định chính: \texttt{định\_lượng}, \texttt{phù\_hợp/quan\_hệ}, \texttt{diễn\_giải}, \texttt{ngoài\_phạm\_vi}, \texttt{chào\_hỏi}.
 
-\textbf{Cấp 2 -- LLM Router} (\texttt{query\_router.py}): Được kích hoạt khi Fast-Path Router không chắc chắn, sử dụng mô hình Gemini (gemini-3.1-flash-lite) để phân loại ý định và trích xuất các tham số ngữ cảnh (loại cây, mùa vụ, loại đất, giai đoạn sinh trưởng, tên giống). Router trả về kết quả dưới dạng JSON có cấu trúc để các tầng sau xử lý.
+\textbf{Cấp 2 -- LLM Router} (\texttt{query\_router.py}): Được kích hoạt khi Fast-Path Router không chắc chắn (trả về nhãn \texttt{uncertain}), sử dụng mô hình Gemini (gemini-3.1-flash-lite) để phân loại ý định và trích xuất các tham số ngữ cảnh: loại cây, mùa vụ, loại đất, giai đoạn sinh trưởng, tên giống, farm\_id. Router trả về kết quả dưới dạng JSON có cấu trúc để các tầng sau xử lý.
+
+Ví dụ câu hỏi ``Lúa OM5451 ở đất phèn nhẹ mùa Đông Xuân bón phân gì?'' sẽ được LLM Router trích xuất thành:
+\begin{verbatim}
+{
+  "intent": "dinh_luong",
+  "crop": "lua",
+  "variety": "OM5451",
+  "soil_type": "phen nhe",
+  "season": "Dong Xuan",
+  "attribute": "phan_bon"
+}
+\end{verbatim}
+JSON này sau đó được dùng để truy vấn trực tiếp vào bảng \texttt{facts} với điều kiện SQL tương ứng, đảm bảo kết quả chính xác.
 
 Bảng~\ref{tab:router-intent} tổng hợp cơ chế phân loại ý định câu hỏi.
 
@@ -215,35 +331,108 @@ Ngoài phạm vi & bất động sản, thể thao, chứng khoán, du lịch & 
 
 \subsubsection{Thiết kế lớp Output và cơ chế tổng hợp câu trả lời (Tuần 7)}
 
-Lớp Output chịu trách nhiệm tổng hợp dữ liệu từ nhiều nguồn khác nhau thành một câu trả lời mạch lạc, dễ hiểu cho người dùng là nông dân. Sinh viên hoàn thiện module tổng hợp câu trả lời với các yêu cầu:
+Lớp Output chịu trách nhiệm tổng hợp dữ liệu từ nhiều nguồn khác nhau thành một câu trả lời mạch lạc, dễ hiểu cho người dùng là nông dân. Đây là lớp tiếp xúc trực tiếp với người dùng cuối, do đó chất lượng ngôn ngữ và tính chính xác của thông tin là yêu cầu hàng đầu. Sinh viên hoàn thiện module tổng hợp câu trả lời với các yêu cầu:
 
 \begin{itemize}
-    \item Ưu tiên dữ liệu từ Tầng 1 (Facts) > Tầng 2 (KG) > Lớp Tool > Tầng 3 (Docs) khi có xung đột.
-    \item Xây dựng bảng ánh xạ \texttt{attribute\_to\_table} để tự động định hướng truy vấn đúng tầng.
-    \item Sử dụng mô hình Gemini (gemini-3.6-flash) để diễn đạt câu trả lời tự nhiên, đúng thuật ngữ nông nghiệp địa phương.
-    \item Đảm bảo câu trả lời luôn kèm theo thông tin nguồn gốc dữ liệu (truy xuất được).
+    \item \textbf{Ưu tiên dữ liệu}: Tầng 1 (Facts) $>$ Tầng 2 (KG) $>$ Lớp Tool $>$ Tầng 3 (Docs) khi có xung đột thông tin giữa các nguồn.
+    \item \textbf{Bảng ánh xạ \texttt{attribute\_to\_table}}: Tự động xác định tầng phù hợp cho từng loại thuộc tính, ví dụ: ``liều\_urea'' → Tầng 1, ``phu\_hop\_dat'' → Tầng 2, ``quy\_trinh\_bon'' → Tầng 3.
+    \item \textbf{Tổng hợp ngôn ngữ}: Sử dụng mô hình Gemini (gemini-3.6-flash) để diễn đạt câu trả lời tự nhiên bằng tiếng Việt, đúng thuật ngữ nông nghiệp địa phương, phù hợp với trình độ của nông dân.
+    \item \textbf{Trích dẫn nguồn}: Câu trả lời luôn kèm theo thông tin nguồn gốc (tên tài liệu, số bản ghi trong CSDL) để người dùng có thể xác minh.
+    \item \textbf{Xử lý câu hỏi thiếu điều kiện}: Khi Fail-Closed Policy phát hiện câu hỏi về liều lượng nhưng thiếu điều kiện, lớp Output sinh ra câu hỏi phản hồi cụ thể (ví dụ: ``Bạn đang canh tác ở mùa vụ nào và loại đất gì?'') thay vì trả lời chung chung.
 \end{itemize}
 
-Đồng thời, sinh viên xây dựng module \texttt{validator.py} (Guardrail) sử dụng LLM-as-Judge để đánh giá xem câu trả lời có được xây dựng dựa trên dữ liệu thực tế (groundedness) hay mô hình đang tự ``bịa đặt'' thông tin nông nghiệp.
+Đồng thời, sinh viên xây dựng module \texttt{validator.py} (Guardrail) sử dụng LLM-as-Judge để đánh giá xem câu trả lời có được xây dựng dựa trên dữ liệu thực tế (groundedness) hay mô hình đang tự ``bịa đặt'' thông tin nông nghiệp. Guardrail hoạt động như một bộ lọc cuối cùng: nếu điểm groundedness thấp, câu trả lời sẽ bị thay thế bằng thông báo ``Tôi không tìm thấy đủ thông tin chính xác để trả lời câu hỏi này'' thay vì đưa ra thông tin có thể sai.
+
+Bảng~\ref{tab:kho-khan-gd3} tổng hợp các khó khăn nổi bật và cách giải quyết trong Giai đoạn 3.
+
+\begin{table}[H]
+\caption{Khó khăn và giải pháp trong Giai đoạn 3 (Tuần 6--7)}
+\label{tab:kho-khan-gd3}
+\centering
+\begin{tabular}{|p{5.5cm}|p{8cm}|}
+\hline
+\textbf{Khó khăn gặp phải} & \textbf{Giải pháp thực hiện} \\
+\hline
+Tiếng Việt có nhiều cách diễn đạt và lỗi chính tả khiến Fast-Path Router bỏ sót & Xây dựng bộ từ điển từ đồng nghĩa và áp dụng underthesea để chuẩn hóa trước khi khớp regex \\
+\hline
+LLM Router đôi khi trả về JSON sai định dạng & Áp dụng prompt kỹ thuật JSON mode và tầng validation schema để retry tối đa 3 lần \\
+\hline
+Câu hỏi multi-turn khiến Router mất ngữ cảnh & Lưu lịch sử 5 lượt hội thoại gần nhất trong session, đưa vào prompt của LLM Router \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp}
+\end{table}
 
 \subsection{Giai đoạn 4 -- Hoàn thiện và tích hợp toàn hệ thống (Tuần 8--9)}
 
 \subsubsection{Xây dựng hoàn chỉnh tầng Knowledge Graph (Tuần 8)}
 
-Sinh viên tập trung xây dựng hoàn chỉnh tầng Knowledge Graph với dữ liệu thực tế:
+Sinh viên tập trung xây dựng hoàn chỉnh tầng Knowledge Graph với dữ liệu thực tế. Tầng này đảm bảo nguyên tắc bất di bất dịch: \textbf{mọi quan hệ trả lời cho người dùng đều phải truy vết được về bản ghi cụ thể trong cơ sở dữ liệu, LLM không được phép tự suy luận quan hệ}.
 
-\begin{itemize}
-    \item Thiết kế schema bảng \texttt{kg\_triples} theo mô hình: \texttt{(subject, relation, object, object\_type, chunk\_id, confidence)}.
-    \item Nạp dữ liệu quan hệ cho 10 loại cây trồng ưu tiên, mỗi cây có quan hệ về: đất phù hợp, mùa vụ thích hợp, sâu bệnh thường gặp và kỹ thuật canh tác tương ứng.
-    \item Xây dựng cơ chế truy vấn quan hệ nhiều bước (multi-hop query) thông qua SQL JOIN, ví dụ: từ giống lúa OM5451 suy ra loại đất phù hợp, từ đó suy tiếp kỹ thuật canh tác tương ứng.
-    \item Gán trọng số độ tin cậy (\texttt{confidence}) cho từng bộ ba quan hệ dựa trên nguồn trích dẫn.
-\end{itemize}
+Schema bảng \texttt{kg\_triples} được thiết kế theo mô hình bộ ba mở rộng, trình bày tại Bảng~\ref{tab:schema-kg}:
+
+\begin{table}[H]
+\caption{Schema bảng \texttt{kg\_triples} (Tầng 2 -- Knowledge Graph)}
+\label{tab:schema-kg}
+\centering
+\begin{tabular}{|p{3.5cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\textbf{Cột} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả} \\
+\hline
+\texttt{id} & SERIAL PRIMARY KEY & Khóa chính tự tăng \\
+\hline
+\texttt{subject} & VARCHAR(200) & Chủ thể quan hệ (tên giống, tên bệnh...) \\
+\hline
+\texttt{relation} & VARCHAR(100) & Loại quan hệ (PHU\_HOP\_VOI, GAY\_HAI\_CHO...) \\
+\hline
+\texttt{object} & VARCHAR(200) & Đối tượng quan hệ \\
+\hline
+\texttt{object\_type} & VARCHAR(100) & Loại đối tượng (LoaiDat, MuaVu, CayTrong...) \\
+\hline
+\texttt{chunk\_id} & INTEGER & Liên kết bản ghi nguồn trong ChromaDB \\
+\hline
+\texttt{confidence} & NUMERIC(3,2) & Độ tin cậy (0.00 -- 1.00) \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tự thiết kế}
+\end{table}
+
+Ví dụ minh hoạ truy vấn multi-hop: để trả lời câu hỏi ``Giống lúa OM5451 phù hợp với kỹ thuật canh tác nào?'', hệ thống thực hiện 2 bước SQL JOIN liên tiếp:
+
+\begin{enumerate}
+    \item Truy vấn 1: Tìm loại đất phù hợp với OM5451: \texttt{SELECT object FROM kg\_triples WHERE subject='OM5451' AND relation='PHU\_HOP\_VOI' AND object\_type='LoaiDat'} → kết quả: ``phèn nhẹ''.
+    \item Truy vấn 2: Tìm kỹ thuật canh tác phù hợp với đất phèn nhẹ: \texttt{SELECT object FROM kg\_triples WHERE subject='phen\_nhe' AND relation='AP\_DUNG\_KY\_THUAT'} → kết quả: ``Kỹ thuật bón vôi trước khi gieo''.
+\end{enumerate}
+
+Dữ liệu đã được nạp đầy đủ cho 10 loại cây trồng ưu tiên: lúa, cà phê, sầu riêng, hồ tiêu, ngô, thanh long, xoài, bưởi, cao su, chè. Mỗi loại cây có ít nhất 4 nhóm quan hệ: đất phù hợp, mùa vụ thích hợp, sâu bệnh thường gặp và kỹ thuật canh tác tương ứng.
 
 \subsubsection{Tích hợp toàn bộ pipeline và phát hiện lỗi hệ thống (Tuần 9)}
 
-Tuần cuối tập trung vào rà soát, tích hợp hoàn chỉnh toàn bộ pipeline và kiểm thử end-to-end. Sinh viên phát hiện một lỗi nghiêm trọng: hàm lấy dữ liệu tool trong Retrieval Plan mới chỉ tích hợp 2 trong số 6 hàm tool đã xây dựng (\texttt{get\_latest\_sensor} và \texttt{get\_alerts}), còn thiếu hoàn toàn \texttt{get\_device\_status}, \texttt{get\_irrigation\_schedule}, \texttt{get\_irrigation\_history} và \texttt{get\_command\_history}. Hậu quả là dù Router đã phân loại đúng loại câu hỏi, chatbot vẫn không có dữ liệu để trả lời vì bước lấy dữ liệu tool phía sau bị thiếu. Sinh viên đã khắc phục ngay trong tuần, bổ sung đầy đủ 4 hàm còn thiếu và kiểm thử lại toàn bộ pipeline.
+Tuần cuối tập trung vào rà soát, tích hợp hoàn chỉnh toàn bộ pipeline và kiểm thử end-to-end toàn diện. Sinh viên tiến hành kiểm thử theo phương pháp ``luồng xử lý từ đầu đến cuối'' (end-to-end) thay vì kiểm thử từng module như các tuần trước.
 
-Bài học quan trọng rút ra: kiểm thử từng module riêng lẻ không đảm bảo hệ thống hoạt động đúng khi tích hợp; cần luôn có bước kiểm thử end-to-end xuyên suốt toàn bộ luồng xử lý.
+Qua quá trình kiểm thử tích hợp, sinh viên phát hiện một lỗi nghiêm trọng trong module \texttt{retrieval\_plan.py}: hàm lấy dữ liệu tool mới chỉ tích hợp 2 trong số 6 hàm tool đã xây dựng (\texttt{get\_latest\_sensor} và \texttt{get\_alerts}), còn thiếu hoàn toàn \texttt{get\_device\_status}, \texttt{get\_irrigation\_schedule}, \texttt{get\_irrigation\_history} và \texttt{get\_command\_history}. Hậu quả thực tế: dù Router đã phân loại đúng loại câu hỏi (nhận ra đây là câu hỏi về lịch tưới), chatbot vẫn trả về ``Tôi không tìm thấy thông tin'' vì bước lấy dữ liệu tool phía sau không có hàm tương ứng.
+
+Bảng~\ref{tab:loi-he-thong} tổng kết các lỗi phát hiện được trong Tuần 9 theo mức độ ưu tiên:
+
+\begin{table}[H]
+\caption{Danh sách lỗi phát hiện và xử lý trong Tuần 9}
+\label{tab:loi-he-thong}
+\centering
+\begin{tabular}{|p{0.8cm}|p{4cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{STT} & \textbf{Mô tả lỗi} & \textbf{Mức độ} & \textbf{Cách khắc phục} \\
+\hline
+1 & Retrieval Plan thiếu 4 hàm tool (device\_status, irrigation\_schedule, irrigation\_history, command\_history) & Nghiêm trọng & Bổ sung đầy đủ 4 hàm vào retrieval\_plan.py và kiểm thử lại \\
+\hline
+2 & Router không nhận dạng câu hỏi multi-turn khi thiếu chủ thể rõ ràng & Trung bình & Thêm cơ chế tham chiếu ngữ cảnh 5 lượt hội thoại gần nhất \\
+\hline
+3 & Log định tuyến chưa ghi đủ thông tin khi Fast-Path Router xử lý & Nhẹ & Bổ sung thêm trường vào log: thời gian xử lý, confidence score \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp từ quá trình kiểm thử}
+\end{table}
+
+Bài học quan trọng rút ra: kiểm thử từng module riêng lẻ không đảm bảo hệ thống hoạt động đúng khi tích hợp; cần luôn có bước kiểm thử end-to-end xuyên suốt toàn bộ luồng xử lý. Đây là lỗi nghiêm trọng nhất được phát hiện trong toàn bộ quá trình thực tập vì nó ảnh hưởng trực tiếp đến trải nghiệm người dùng đối với nhóm câu hỏi IoT.
 
 \section{Chi tiết nhật ký thực tập}
 
@@ -327,7 +516,29 @@ Sau 9 tuần thực tập, sinh viên đã hoàn thành các sản phẩm kỹ t
 
 \subsection{Kết quả kiểm thử}
 
-Hệ thống được kiểm thử với bộ câu hỏi benchmark hơn 260 câu đại diện cho các tình huống thực tế: câu hỏi về liều lượng phân bón và thuốc BVTV (kiểm tra Fail-Closed Policy); câu hỏi về quan hệ giống -- đất -- mùa vụ (kiểm tra Knowledge Graph); câu hỏi về kỹ thuật canh tác từ tài liệu (kiểm tra RAG tầng 3); câu hỏi về dữ liệu IoT thời gian thực (kiểm tra lớp Tool); câu hỏi ngoài phạm vi và câu hỏi cố tình truy cập trái phép (kiểm tra bảo mật).
+Hệ thống được kiểm thử với bộ câu hỏi benchmark gồm hơn 260 câu, được phân loại theo 5 nhóm chức năng chính. Bảng~\ref{tab:ket-qua-test} tóm tắt kết quả kiểm thử theo từng nhóm:
+
+\begin{table}[H]
+\caption{Kết quả kiểm thử phân loại theo nhóm chức năng}
+\label{tab:ket-qua-test}
+\centering
+\begin{tabular}{|p{4cm}|p{2cm}|p{4.5cm}|p{3cm}|}
+\hline
+\textbf{Nhóm kiểm thử} & \textbf{Số câu} & \textbf{Mục tiêu kiểm tra} & \textbf{Tiêu chí đánh giá} \\
+\hline
+Câu hỏi định lượng & 80 & Fail-Closed Policy; độ chính xác số liệu & Số liệu đúng 100\%, không tự sinh \\
+\hline
+Câu hỏi quan hệ & 60 & Knowledge Graph multi-hop & Quan hệ truy vết được trong kg\_triples \\
+\hline
+Câu hỏi kỹ thuật & 60 & RAG Tầng 3 (ChromaDB + BM25) & Chunk liên quan, có trích nguồn \\
+\hline
+Câu hỏi IoT thực tế & 40 & Lớp Tool; phân quyền IAM & Dữ liệu thời gian thực, đúng farm\_id \\
+\hline
+Câu hỏi biên / bảo mật & 30 & Guardrail; từ chối ngoài phạm vi; chặn cross-farm & Từ chối đúng 100\% trường hợp vi phạm \\
+\hline
+\end{tabular}
+\Nguon{Sinh viên tổng hợp từ data/acceptance\_results.json}
+\end{table}
 
 % ======================================================
 % GHI CHU ANH [3]: Chup man hinh ket qua benchmark
@@ -368,12 +579,18 @@ Hệ thống được kiểm thử với bộ câu hỏi benchmark hơn 260 câu
 
 \subsection{Bài học kinh nghiệm}
 
-Qua quá trình thực tập, sinh viên rút ra một số bài học kinh nghiệm quan trọng:
+Qua quá trình thực tập 9 tuần tại NEXTX, sinh viên rút ra một số bài học kinh nghiệm quan trọng không chỉ về kỹ thuật mà còn về quy trình làm việc trong môi trường doanh nghiệp:
 
 \begin{itemize}
-    \item \textbf{Nguyên tắc thiết kế an toàn}: Đối với ứng dụng AI phục vụ người dùng cuối trong lĩnh vực có tác động trực tiếp đến kinh tế (liều lượng phân bón, thuốc BVTV), việc áp dụng Fail-Closed Policy và không cho phép mô hình ngôn ngữ tự sinh số liệu là bắt buộc.
-    \item \textbf{Kiểm thử tích hợp}: Kiểm thử từng module riêng lẻ không đủ để đảm bảo hệ thống hoạt động đúng khi tích hợp; luôn cần kiểm thử end-to-end xuyên suốt toàn bộ luồng xử lý.
-    \item \textbf{Tối ưu chi phí và tốc độ}: Kiến trúc router hai cấp (rule-based + LLM) giúp giảm đáng kể số lần gọi LLM API, từ đó giảm chi phí và độ trễ mà không ảnh hưởng đến độ chính xác tổng thể.
-    \item \textbf{Phân tầng dữ liệu}: Phân loại rõ ràng các nguồn dữ liệu theo mức độ tin cậy từ giai đoạn thiết kế giúp kiểm soát chất lượng câu trả lời tốt hơn nhiều so với cách tiếp cận RAG thông thường.
-    \item \textbf{Đơn giản hóa hạ tầng}: Dùng PostgreSQL thay cho Neo4j cho Knowledge Graph là ví dụ điển hình về việc chọn giải pháp đơn giản hơn nhưng vẫn đủ đáp ứng yêu cầu, giúp giảm độ phức tạp vận hành đáng kể.
+    \item \textbf{Nguyên tắc thiết kế an toàn (Safety-First Design)}: Đối với ứng dụng AI phục vụ người dùng cuối trong lĩnh vực có tác động trực tiếp đến kinh tế (liều lượng phân bón, thuốc BVTV), việc áp dụng Fail-Closed Policy và không cho phép mô hình ngôn ngữ tự sinh số liệu là bắt buộc. Một câu trả lời sai về liều lượng phân bón có thể gây cháy lúa và thiệt hại hàng triệu đồng cho nông dân --- đây không thể là ``lỗi chấp nhận được''.
+
+    \item \textbf{Kiểm thử tích hợp bắt buộc}: Bài học từ Tuần 9 cho thấy kiểm thử từng module riêng lẻ không đủ để đảm bảo hệ thống hoạt động đúng khi tích hợp. Cần thiết lập quy trình kiểm thử end-to-end định kỳ sau mỗi lần thêm hoặc chỉnh sửa bất kỳ module nào trong pipeline.
+
+    \item \textbf{Tối ưu chi phí và tốc độ bằng kiến trúc phân tầng}: Kiến trúc Router hai cấp (rule-based $<$5ms + LLM) giúp giảm đáng kể số lần gọi LLM API cho các câu hỏi có mẫu rõ ràng, từ đó giảm chi phí vận hành và độ trễ mà không ảnh hưởng đến độ chính xác tổng thể.
+
+    \item \textbf{Phân tầng dữ liệu theo mức độ tin cậy}: Phân loại rõ ràng các nguồn dữ liệu (định lượng cứng, quan hệ, mô tả) từ giai đoạn thiết kế giúp kiểm soát chất lượng câu trả lời tốt hơn nhiều so với cách tiếp cận RAG thông thường chỉ dùng một loại kho lưu trữ vector.
+
+    \item \textbf{Đơn giản hóa hạ tầng khi có thể}: Quyết định dùng PostgreSQL thay cho Neo4j cho Knowledge Graph, hay dùng BM25 bổ trợ thay vì xây dựng sparse index riêng, là những ví dụ điển hình của nguyên tắc ``YAGNI'' (You Aren't Gonna Need It): chọn giải pháp đủ tốt cho quy mô hiện tại thay vì over-engineer từ đầu.
+
+    \item \textbf{Tài liệu hoá song song với phát triển}: Việc ghi lại nhật ký thực tập chi tiết theo từng tuần giúp phát hiện sớm sự không nhất quán giữa thiết kế ban đầu và triển khai thực tế (như trường hợp Retrieval Plan thiếu tool ở Tuần 9 chỉ được phát hiện khi rà soát tổng thể).
 \end{itemize}
