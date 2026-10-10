@@ -1,17 +1,100 @@
+% ============================================================
+% Phu luc
+% Sinh vien: Dinh Van Tan Luong -- MSV: 1771020446
+% Don vi: Cong ty Co Phan Tuong Lai NEXTX
+% ============================================================
+
 \appendix
 \UnnumberedChapter{PHỤ LỤC}
 
 \section*{Phụ lục 1. Hình ảnh minh họa}
 
-Sinh viên chèn hình ảnh minh họa, ảnh chụp màn hình sản phẩm hoặc giao diện hệ thống nếu được phép công bố.
+Phần này bổ sung một số hình ảnh minh họa khác của hệ thống NextFarm Chatbot, bên cạnh
+các hình, sơ đồ đã trình bày trực tiếp trong Chương 2.
+
+% Lưu ý kỹ thuật: các hình trong Phụ lục KHÔNG dùng môi trường figure/\caption thông
+% thường, vì bộ đếm chương (\thechapter) không hợp lệ bên trong chương không đánh số
+% (PHỤ LỤC nằm sau lệnh \appendix). Thay vào đó, mỗi hình được đánh số thủ công dạng
+% "Hình PL.n" và không đưa vào danh mục hình chung của Chương 1--3.
+
+\newcounter{plhinh}
+
+\stepcounter{plhinh}
+\begin{center}
+    \fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn ảnh cấu trúc thư mục dự án tại đây]} \\[6pt]
+        Chụp màn hình VS Code hiển thị cây thư mục \texttt{backend/} (gồm
+        \texttt{layers/}, \texttt{router/}, \texttt{retrieval/}, \texttt{tools/},
+        \texttt{iam/}) và \texttt{frontend/}
+    }}\\[4pt]
+    Hình PL.\theplhinh. Cấu trúc thư mục mã nguồn dự án NextFarm Chatbot
+\end{center}
+% CẦN CHỤP: Mở VS Code tại thư mục gốc dự án, mở rộng cây thư mục backend/ và
+% frontend/ rồi chụp lại. Đặt tên file "pl-cau-truc-thu-muc.png", đặt vào images/.
+% Khi có ảnh, thay khối fbox phía trên bằng:
+% \includegraphics[width=0.85\textwidth]{images/pl-cau-truc-thu-muc.png}
+
+\bigskip
+\stepcounter{plhinh}
+\begin{center}
+    \fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn ảnh giao diện trang quản trị tại đây]} \\[6pt]
+        Chụp màn hình \texttt{admin.html} đang hiển thị thông tin trang trại/giám sát
+    }}\\[4pt]
+    Hình PL.\theplhinh. Giao diện trang quản trị (Admin Dashboard)
+\end{center}
+% CẦN CHỤP: Mở frontend/admin.html trên trình duyệt (cần backend đang chạy), chụp lại
+% màn hình dashboard. Đặt tên file "pl-admin-dashboard.png".
+
+\bigskip
+\stepcounter{plhinh}
+\begin{center}
+    \fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn ảnh terminal khởi động hệ thống tại đây]} \\[6pt]
+        Chụp terminal chạy lệnh khởi động backend (uvicorn) không báo lỗi
+    }}\\[4pt]
+    Hình PL.\theplhinh. Terminal khởi động thành công hệ thống NextFarm Chatbot
+\end{center}
+% CẦN CHỤP: Chạy backend (ví dụ "uvicorn backend.app:app --reload" hoặc qua
+% START_CHATBOT.bat), chụp lại terminal lúc server khởi động thành công, không có lỗi.
+% Đặt tên file "pl-terminal-khoi-dong.png".
+
+\bigskip
+\stepcounter{plhinh}
+\begin{center}
+    \fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering
+        \textbf{[GHI CHÚ: Chèn ảnh thử gọi API tool tại đây]} \\[6pt]
+        Chụp màn hình Postman (hoặc trình duyệt) gọi thử một endpoint của lớp Tool,
+        ví dụ \texttt{/api/tools/irrigation-schedule}, kèm kết quả JSON trả về
+    }}\\[4pt]
+    Hình PL.\theplhinh. Kết quả gọi thử một API của lớp Tool
+\end{center}
+% CẦN CHỤP: Dùng Postman hoặc trình duyệt gọi thử 1 route REST trong tool_router.py
+% (ví dụ lấy lịch tưới của một farm_id mẫu), chụp lại request và response JSON.
+% Đặt tên file "pl-api-tool.png".
 
 \section*{Phụ lục 2. Tài liệu, mã nguồn hoặc liên kết liên quan}
 
-Sinh viên có thể bổ sung:
-
 \begin{itemize}
-    \item Link GitHub/GitLab nếu được phép.
-    \item Tài liệu thiết kế.
-    \item Tài liệu hướng dẫn sử dụng.
-    \item File cài đặt hoặc tài liệu bàn giao.
+    \item \textbf{Mã nguồn dự án}:
+    \url{https://github.com/veliona-vollerei/Chat_Bot_Nong_Nghiep_demo} (nếu được
+    doanh nghiệp cho phép công bố).
+    \item \textbf{Tài liệu đặc tả ràng buộc an toàn tích hợp NextFarm}: tệp
+    \texttt{device\_safety\_design.md} trong thư mục \texttt{backend/tools/} --- mô tả
+    chi tiết các ràng buộc phân quyền theo trang trại, chính sách fail-closed và nguyên
+    tắc chỉ đọc dữ liệu thiết bị đã trình bày ở Mục 2.2.1.
+    \item \textbf{Tài liệu hướng dẫn cài đặt, sử dụng}: \texttt{README.md},
+    \texttt{requirements.txt} (danh sách thư viện Python cần cài đặt) và
+    \texttt{START\_CHATBOT.bat} (script khởi động nhanh hệ thống).
+    \item \textbf{Bộ dữ liệu kiểm thử (benchmark)}:
+    \texttt{data/benchmark\_questions.json} --- hơn 260 câu hỏi kiểm thử được phân
+    loại theo 5 nhóm chức năng đã trình bày ở Bảng~\ref{tab:ket-qua-test} (Chương 2).
+    \item \textbf{Kết quả chạy kiểm thử}: \texttt{data/acceptance\_results.json} ---
+    kết quả benchmark chi tiết theo từng câu hỏi, dùng làm căn cứ cho các bảng số liệu
+    trình bày ở Chương 2 và Chương 3.
 \end{itemize}
+
+\textit{Lưu ý: các đường liên kết và tài liệu trên chỉ được công bố trong báo cáo nếu
+đã được sự đồng ý của Công ty Cổ phần Tương lai NEXTX; trường hợp không được phép công
+bố công khai, sinh viên có thể thay thế bằng mô tả ngắn gọn hoặc lược bỏ liên kết cụ
+thể.}

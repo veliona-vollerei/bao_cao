@@ -1,34 +1,101 @@
+% ============================================================
+% Chuong 3 -- Ket qua thuc tap
+% Sinh vien: Dinh Van Tan Luong -- MSV: 1771020446
+% Don vi: Cong ty Co Phan Tuong Lai NEXTX
+% ============================================================
+
 \chapter{KẾT QUẢ THỰC TẬP}
 
 \section{Tóm tắt nội dung đã thực hiện}
 
-Sinh viên tóm tắt toàn bộ các nội dung đã thực hiện trong quá trình thực tập, bao gồm các công việc chuyên môn, công việc hỗ trợ, các buổi họp, trao đổi nghiệp vụ hoặc các hoạt động khác tại doanh nghiệp.
+Trong 9 tuần thực tập tại Công ty Cổ phần Tương lai NEXTX, sinh viên đã tham gia xây
+dựng toàn bộ phần xử lý phía sau (backend) của hệ thống \textbf{NextFarm Chatbot Nông
+Nghiệp AI (phiên bản 2.2)}, đi theo đúng 4 giai đoạn đã trình bày chi tiết ở Chương 2:
+(1) nghiên cứu và xác định yêu cầu, nguồn dữ liệu, ràng buộc tích hợp NextFarm; (2) xây
+dựng nền tảng kỹ thuật gồm kiến trúc Tri-Layer RAG và lớp Tool kết nối IoT; (3) xây dựng
+cơ chế định tuyến (Router hai cấp) và tổng hợp câu trả lời (Output, Guardrail); (4) hoàn
+thiện Knowledge Graph, tích hợp toàn bộ pipeline và kiểm thử end-to-end.
+
+Song song với công việc chuyên môn, sinh viên thường xuyên báo cáo tiến độ hằng tuần,
+trao đổi trực tiếp với người hướng dẫn tại doanh nghiệp để làm rõ yêu cầu nghiệp vụ nông
+nghiệp, đồng thời phối hợp với đội kỹ thuật phụ trách nền tảng NextFarm để xác minh lại
+đặc tả API trong các trường hợp tài liệu chưa mô tả rõ (đặc biệt ở giai đoạn thiết kế
+ràng buộc phân quyền tại Tuần 3). Toàn bộ quá trình làm việc, trao đổi và các phiên bản
+mã nguồn đều được lưu vết qua Git/GitHub, giúp dễ dàng đối chiếu tiến độ thực tế so với
+kế hoạch đề ra ban đầu.
+
+Nhìn chung, sinh viên đã hoàn thành đầy đủ khối lượng công việc được giao: từ khảo sát
+dữ liệu, thiết kế kiến trúc, xây dựng mã nguồn, cho đến kiểm thử và đánh giá hệ thống
+bằng bộ benchmark nội bộ, đáp ứng đúng mục tiêu đã đề ra ở Chương 2.
 
 \section{Sản phẩm hoặc dự án thực tế đã tham gia}
 
-Sinh viên mô tả sản phẩm, module, chức năng hoặc dự án thực tế đã tham gia. Nội dung có thể bao gồm:
+\subsection{Thông tin dự án}
 
 \begin{itemize}
-    \item Tên dự án hoặc sản phẩm.
-    \item Mục tiêu của dự án.
-    \item Vai trò của sinh viên trong dự án.
-    \item Các chức năng hoặc nhiệm vụ đã thực hiện.
-    \item Công nghệ, ngôn ngữ lập trình, framework, cơ sở dữ liệu hoặc công cụ sử dụng.
+    \item \textbf{Tên dự án}: NextFarm Chatbot Nông Nghiệp AI (phiên bản 2.2).
+    \item \textbf{Mục tiêu dự án}: xây dựng chatbot tư vấn nông nghiệp đáng tin cậy,
+    tích hợp trực tiếp với nền tảng IoT NextFarm để trả lời cả câu hỏi kiến thức canh
+    tác tĩnh lẫn câu hỏi vận hành thời gian thực theo từng trang trại.
+    \item \textbf{Vai trò của sinh viên}: thực tập sinh phát triển backend
+    (\textit{Intern Backend Developer}), phụ trách toàn bộ chuỗi xử lý câu hỏi phía sau
+    của chatbot — từ tiền xử lý ngôn ngữ, định tuyến, truy xuất đa nguồn, tổng hợp câu
+    trả lời, đến cơ chế kiểm soát chất lượng (Guardrail).
 \end{itemize}
+
+\subsection{Các chức năng, nhiệm vụ đã thực hiện}
+
+\begin{itemize}
+    \item Khảo sát, phân loại 4 nhóm nguồn dữ liệu và thiết kế kiến trúc Tri-Layer RAG
+    (Fact Store -- Knowledge Graph -- Document Store).
+    \item Thiết kế đặc tả ràng buộc an toàn khi tích hợp API NextFarm (phân quyền theo
+    trang trại, chính sách fail-closed, nguyên tắc chỉ đọc dữ liệu thiết bị).
+    \item Xây dựng 6 hàm tool kết nối API NextFarm (lấy cảm biến mới nhất, trạng thái
+    thiết bị, lịch tưới, lịch sử tưới, lịch sử lệnh điều khiển, cảnh báo) và các route
+    REST tương ứng trong \texttt{tool\_router.py}.
+    \item Xây dựng Router hai cấp: Fast-Path Rule Router (rule-based) và LLM Router
+    (dùng Gemini) làm phương án dự phòng.
+    \item Xây dựng lớp Output tổng hợp câu trả lời đa nguồn và module \texttt{validator.py}
+    (Guardrail) chống bịa đặt dữ liệu.
+    \item Xây dựng hoàn chỉnh tầng Knowledge Graph (bảng \texttt{kg\_triples}) cho 10
+    loại cây trồng chính, hỗ trợ truy vấn quan hệ nhiều bước.
+    \item Phát hiện và khắc phục lỗi tích hợp nghiêm trọng ở Retrieval Plan (thiếu 4/6
+    hàm tool) thông qua kiểm thử end-to-end toàn bộ pipeline.
+    \item Xây dựng và chạy bộ benchmark nội bộ hơn 260 câu hỏi để đánh giá độ chính xác
+    và độ an toàn của hệ thống.
+\end{itemize}
+
+Bảng~\ref{tab:cong-nghe-su-dung} tổng hợp các công nghệ, công cụ chính đã sử dụng trong
+suốt quá trình thực tập.
 
 \begin{table}[H]
 \centering
-\caption{Danh sách công nghệ sử dụng trong quá trình thực tập}
+\caption{Danh sách công nghệ, công cụ sử dụng trong quá trình thực tập}
 \label{tab:cong-nghe-su-dung}
 \begin{tabular}{|c|p{4cm}|p{8cm}|}
 \hline
 \textbf{STT} & \textbf{Công nghệ/Công cụ} & \textbf{Mục đích sử dụng} \\
 \hline
-1 & Git/GitHub & Quản lý mã nguồn và phối hợp làm việc nhóm. \\
+1 & Python, FastAPI & Xây dựng toàn bộ backend, API xác thực, chat và quản trị. \\
 \hline
-2 & Visual Studio Code & Soạn thảo mã nguồn. \\
+2 & Google Gemini API & Mô hình ngôn ngữ lớn dùng cho LLM Router, tổng hợp câu trả lời
+và Guardrail (LLM-as-Judge). \\
 \hline
-3 & MySQL/\allowbreak PostgreSQL & Lưu trữ và quản lý dữ liệu. \\
+3 & PostgreSQL & Lưu trữ dữ liệu có cấu trúc: bảng \texttt{facts} (số liệu định lượng)
+và \texttt{kg\_triples} (Knowledge Graph). \\
+\hline
+4 & ChromaDB & Cơ sở dữ liệu vector lưu embedding tài liệu kỹ thuật (Document Store). \\
+\hline
+5 & BM25 Okapi (rank\_bm25) & Truy xuất thưa (sparse retrieval), kết hợp Dense retrieval
+qua thuật toán RRF. \\
+\hline
+6 & underthesea & Tiền xử lý, tách từ và chuẩn hóa câu hỏi tiếng Việt. \\
+\hline
+7 & marker & Phân tích, trích xuất nội dung tài liệu PDF/DOCX/PPTX đầu vào. \\
+\hline
+8 & Git/GitHub & Quản lý mã nguồn, lưu vết tiến độ và phối hợp với người hướng dẫn. \\
+\hline
+9 & Visual Studio Code & Soạn thảo và gỡ lỗi mã nguồn. \\
 \hline
 \end{tabular}
 \Nguon{Sinh viên tổng hợp}
@@ -39,31 +106,96 @@ Sinh viên mô tả sản phẩm, module, chức năng hoặc dự án thực t�
 \subsection{Kỹ năng chuyên môn}
 
 \begin{itemize}
-    \item Kỹ năng lập trình, kiểm thử hoặc phân tích hệ thống.
-    \item Kỹ năng sử dụng công cụ phát triển phần mềm.
-    \item Kỹ năng đọc hiểu tài liệu kỹ thuật.
-    \item Kỹ năng xử lý lỗi và tối ưu công việc.
+    \item Thiết kế cơ sở dữ liệu quan hệ cho dữ liệu định lượng và đồ thị tri thức
+    (schema bảng \texttt{facts}, \texttt{kg\_triples}), viết truy vấn SQL nối bảng phục
+    vụ suy luận quan hệ nhiều bước.
+    \item Xây dựng API REST với FastAPI, thiết kế middleware kiểm tra xác thực và phân
+    quyền trước khi xử lý nghiệp vụ.
+    \item Kỹ thuật truy xuất thông tin nâng cao: kết hợp Dense retrieval (embedding
+    đa ngôn ngữ) và Sparse retrieval (BM25), hợp nhất kết quả bằng thuật toán RRF.
+    \item Kỹ năng viết prompt (\textit{prompt engineering}) cho mô hình ngôn ngữ lớn để
+    vừa trích xuất tham số có cấu trúc (JSON), vừa sinh câu trả lời tự nhiên đúng phạm
+    vi dữ liệu cho phép.
+    \item Kỹ năng gỡ lỗi (debug) một hệ thống pipeline nhiều tầng, biết cách kiểm thử
+    end-to-end để phát hiện lỗi tích hợp mà kiểm thử từng module riêng lẻ không phát
+    hiện được.
+    \item Viết unit test cho các hàm xử lý nghiệp vụ, đặc biệt với các trường hợp biên
+    (dữ liệu thiếu, thiết bị offline, phân quyền không hợp lệ).
+    \item Kỹ năng đọc hiểu và làm việc với tài liệu API của một hệ thống bên ngoài
+    (NextFarm) để thiết kế lớp tích hợp an toàn.
 \end{itemize}
 
 \subsection{Kỹ năng mềm}
 
 \begin{itemize}
-    \item Kỹ năng giao tiếp trong môi trường làm việc.
-    \item Kỹ năng làm việc nhóm.
-    \item Kỹ năng quản lý thời gian.
-    \item Tác phong làm việc chuyên nghiệp.
+    \item Kỹ năng giao tiếp và đặt câu hỏi đúng trọng tâm khi làm việc với người hướng
+    dẫn và đội kỹ thuật NextFarm để làm rõ các điểm chưa rõ trong tài liệu API.
+    \item Kỹ năng quản lý thời gian và lập kế hoạch công việc theo từng tuần, bám sát
+    tiến độ 4 giai đoạn của dự án trong suốt 9 tuần.
+    \item Kỹ năng viết tài liệu kỹ thuật rõ ràng, mạch lạc (đặc tả ràng buộc tích hợp,
+    nhật ký thực tập), giúp người khác dễ dàng nắm bắt lại quyết định thiết kế.
+    \item Tư duy phản biện và cẩn trọng khi rà soát hệ thống, thể hiện rõ qua việc chủ
+    động kiểm thử end-to-end và phát hiện lỗi tích hợp nghiêm trọng ở Tuần 9 thay vì chỉ
+    dừng lại khi từng module riêng lẻ đã chạy đúng.
+    \item Ý thức trách nhiệm với chất lượng sản phẩm khi hiểu rằng người dùng cuối của
+    hệ thống là nông dân thực tế — một câu trả lời sai về liều lượng phân bón có thể gây
+    thiệt hại kinh tế trực tiếp, từ đó hình thành thái độ làm việc cẩn trọng, luôn ưu
+    tiên sự an toàn và trung thực của câu trả lời hơn là tính ``mượt mà''.
 \end{itemize}
 
 \section{Đề xuất cải thiện hoặc đóng góp ý kiến cho doanh nghiệp}
 
-Sinh viên nêu các đề xuất phù hợp nếu có, ví dụ:
+Dựa trên những khó khăn và bài học thực tế trong quá trình thực tập (đã trình bày chi
+tiết ở Chương 2), sinh viên xin đề xuất một số ý kiến sau:
 
 \begin{itemize}
-    \item Đề xuất cải thiện quy trình hướng dẫn thực tập sinh.
-    \item Đề xuất cải thiện tài liệu kỹ thuật hoặc tài liệu bàn giao.
-    \item Đề xuất cải thiện công cụ, quy trình kiểm thử hoặc quy trình triển khai.
+    \item \textbf{Bổ sung bước kiểm thử end-to-end bắt buộc}: nên đưa kiểm thử xuyên
+    suốt toàn bộ pipeline thành bước bắt buộc trước khi nghiệm thu bất kỳ module nào,
+    thay vì chỉ kiểm thử đơn vị (unit test) riêng lẻ — tránh lặp lại tình huống như ở
+    Tuần 9, khi lỗi Retrieval Plan thiếu tool chỉ được phát hiện ở giai đoạn tích hợp
+    cuối cùng.
+    \item \textbf{Đảm bảo benchmark phản ánh đúng pipeline thực tế}: công cụ đánh giá
+    nên luôn gọi qua đúng luồng xử lý sản xuất (lần lượt qua Router, Retrieval Plan rồi
+    đến bước tổng hợp câu trả lời) thay vì gọi trực tiếp vào từng hàm xử lý, để tránh
+    đánh giá ``ảo'' không phản ánh đúng chất lượng thực tế của hệ thống.
+    \item \textbf{Hoàn thiện thêm tài liệu API nội bộ}: một số điểm trong tài liệu API
+    của NextFarm (đặc biệt về cơ chế phân quyền) chưa được mô tả đầy đủ, khiến thực tập
+    sinh mất thời gian trao đổi lại với đội kỹ thuật; nên cập nhật tài liệu API đầy đủ
+    và dễ tiếp cận hơn cho các thực tập sinh ở các đợt sau.
+    \item \textbf{Tổ chức buổi rà soát kiến trúc giữa kỳ}: nên bố trí một buổi review
+    kiến trúc tổng thể ở khoảng giữa thời gian thực tập (thay vì chỉ ở giai đoạn tích
+    hợp cuối) để phát hiện sớm hơn các điểm chưa khớp giữa các module do nhiều người/
+    giai đoạn phát triển riêng lẻ.
+    \item \textbf{Tiếp tục đầu tư cho module Guardrail}: do đây là lớp quyết định độ an
+    toàn của toàn hệ thống khi phục vụ người dùng thật, doanh nghiệp nên dành thêm thời
+    gian và dữ liệu kiểm thử cho nhóm câu hỏi biên (ngoài phạm vi, không có đáp án, cố
+    tình truy cập trái phép) ở các giai đoạn phát triển tiếp theo.
 \end{itemize}
 
 \section{Tự đánh giá hiệu quả thực tập}
 
-Sinh viên tự đánh giá mức độ hoàn thành công việc, những điểm mạnh, hạn chế và định hướng cải thiện sau quá trình thực tập.
+Qua 9 tuần thực tập, sinh viên tự đánh giá đã hoàn thành đầy đủ mục tiêu và khối lượng
+công việc được giao: xây dựng thành công toàn bộ chuỗi xử lý backend của chatbot nông
+nghiệp, từ khâu khảo sát dữ liệu đến kiểm thử, đánh giá hệ thống bằng bộ benchmark nội
+bộ.
+
+\textbf{Điểm mạnh}: sinh viên nắm vững và vận dụng được một kiến trúc truy xuất thông
+tin nâng cao (Tri-Layer RAG kết hợp Agentic Tools), có khả năng tự nghiên cứu tài liệu
+kỹ thuật mới (API bên thứ ba, kỹ thuật hybrid retrieval) và áp dụng vào bài toán thực
+tế; đồng thời thể hiện được tinh thần trách nhiệm khi chủ động kiểm thử kỹ lưỡng và phát
+hiện lỗi hệ thống trước khi bàn giao.
+
+\textbf{Hạn chế}: ở giai đoạn đầu, do chưa có nhiều kinh nghiệm về nghiệp vụ nông
+nghiệp, sinh viên mất khá nhiều thời gian tìm hiểu thuật ngữ và quy trình canh tác trước
+khi có thể thiết kế dữ liệu chính xác; bên cạnh đó, việc chỉ kiểm thử từng module riêng
+lẻ ở các tuần đầu khiến lỗi tích hợp ở lớp Retrieval Plan không được phát hiện sớm, dẫn
+đến phải dành thêm thời gian khắc phục ở giai đoạn cuối.
+
+\textbf{Định hướng sau thực tập}: sinh viên mong muốn tiếp tục trau dồi kiến thức và kỹ
+năng thiết kế hệ thống AI theo hướng an toàn, đáng tin cậy (\textit{safety-first AI
+design}) — đặc biệt là các kỹ thuật chống bịa đặt thông tin (hallucination) cho mô hình
+ngôn ngữ lớn, vì đây là năng lực ngày càng quan trọng khi triển khai AI vào các lĩnh vực
+có ảnh hưởng trực tiếp đến đời sống như nông nghiệp. Nhìn chung, đợt thực tập đã giúp
+sinh viên hiểu rõ hơn về quy trình phát triển một sản phẩm AI ứng dụng trong môi trường
+doanh nghiệp thực tế, từ khâu thiết kế, xây dựng, kiểm thử cho đến đánh giá chất lượng
+trước khi đưa vào sử dụng.
